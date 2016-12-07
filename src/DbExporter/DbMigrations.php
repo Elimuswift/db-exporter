@@ -80,7 +80,6 @@ class DbMigrations extends DbExporter
             $tableDescribes = $this->getTableDescribes($value['table_name']);
             // Loop over the tables fields
             foreach ($tableDescribes as $values) {
-                $method = "";
                 $para = strpos($values->Type, '(');
                 $type = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
                 $numbers = "";
@@ -90,62 +89,10 @@ class DbMigrations extends DbExporter
 
                 if (in_array($type, ['var', 'varchar', 'enum', 'decimal', 'float'])) {
                     $para = strpos($values->Type, '(');
-                    $numbers = ", " . substr($values->Type, $para + 1, -1);
+                    $opt = ", " . substr($values->Type, $para + 1, -1);
+                    $numbers = $type== 'enum' ? ', array(' . $opt . ')' : $opt;
                 }
-                switch ($type) {
-                    case 'int':
-                        $method = 'integer';
-                        break;
-                    case 'smallint':
-                        $method = 'smallInteger';
-                        break;
-                    case 'bigint':
-                        $method = 'bigInteger';
-                        break;
-                    case 'char':
-                    case 'varchar':
-                        $method = 'string';
-                        break;
-                    case 'float':
-                        $method = 'float';
-                        break;
-                    case 'double':
-                        $method = 'double';
-                        break;
-                    case 'decimal':                       
-                        $method = 'decimal';
-                        break;
-                    case 'tinyint':
-                        $method = 'boolean';
-                        break;
-                    case 'date':
-                        $method = 'date';
-                        break;
-                    case 'timestamp':
-                        $method = 'timestamp';
-                        break;
-                    case 'datetime':
-                        $method = 'dateTime';
-                        break;
-                    case 'longtext':
-                        $method = 'longText';
-                        break;
-                    case 'mediumtext':
-                        $method = 'mediumText';
-                        break;
-                    case 'text':
-                        $method = 'text';
-                        break;
-                    case 'longblob':
-                    case 'blob':
-                        $method = 'binary';
-                        break;
-                    case 'enum':
-                        $method = 'enum';
-                        $numbers = ', array(' . $numbers . ')';
-                        break;
-                }
-
+                $method = $this->columnType($type);
                 if ($values->Key == 'PRI') {
                     $method = 'increments';
                 }
@@ -193,6 +140,14 @@ class DbMigrations extends DbExporter
         return $this;
     }
 
+    public function columnType($type)
+    {
+       $columns = ['int'=> 'integer','smallint' => 'smallInteger','bigint' => 'bigInteger','char '=>'string', 'varchar' => 'string','float' => 'float','double' => 'double','decimal' => 'decimal','tinyint' => 'boolean','date' => 'date','timestamp' => 'timestamp','datetime' => 'dateTime','longtext' => 'longText','mediumtext' => 'mediumText','text' => 'text','longblob' => 'binary' ,'blob' => 'binary','enum' => 'enum'];
+       return array_key_exists($type, $columns) ? $columns[$type] : '';
+                        
+               
+
+    }
     /**
      * Compile the migration into the base migration file
      * TODO use a template with seacrh&replace
