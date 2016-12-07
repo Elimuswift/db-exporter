@@ -35,19 +35,7 @@ class MigrationsGeneratorCommand extends GeneratorCommand
             $this->comment("Preparing the migrations for database {$database}");
         }
 
-        // Grab the options
-        $ignore = $this->option('ignore');
-
-        if (empty($ignore)) {
-            $this->handler->migrate($database);
-        } else {
-            $tables = explode(',', str_replace(' ', '', $ignore));
-
-            $this->handler->ignore($tables)->migrate($this->argument('database'));
-            foreach (DbExporter::$ignore as $table) {
-                $this->comment("Ignoring the {$table} table");
-            }
-        }
+        $this->fireAction('migrate', $database);
 
         // Symfony style block messages
         $this->blockMessage('Success!', 'Database migrations generated in: ' . $this->handler->getMigrationsFilePath());

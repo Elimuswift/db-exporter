@@ -51,4 +51,21 @@ class GeneratorCommand extends Command
             array('ignore', 'i', InputOption::VALUE_REQUIRED, 'Ignore tables to export, seperated by a comma', null)
         );
     }
+
+    protected function fireAction($action,$database)
+    {
+        // Grab the options
+        $ignore = $this->option('ignore');
+
+        if (empty($ignore)) {
+            $this->handler->$action($database);
+        } else {
+            $tables = explode(',', str_replace(' ', '', $ignore));
+
+            $this->handler->ignore($tables)->$action($database);
+            foreach (DbExporter::$ignore as $table) {
+                $this->comment("Ignoring the {$table} table");
+            }
+        }
+    }
 }

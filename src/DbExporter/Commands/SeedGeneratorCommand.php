@@ -38,17 +38,7 @@ class SeedGeneratorCommand extends GeneratorCommand
         }
 
         // Grab the options
-        $ignore = $this->option('ignore');
-
-        if (empty($ignore)) {
-            $this->handler->seed($database);
-        } else {
-            $tables = explode(',', str_replace(' ', '', $ignore));
-            $this->handler->ignore($tables)->seed($database);
-            foreach (DbExporter::$ignore as $table) {
-                $this->comment("Ignoring the {$table} table");
-            }
-        }
+        $this->fireAction('seed', $database);
 
         // Symfony style block messages
         $formatter = $this->getHelperSet()->get('formatter');
