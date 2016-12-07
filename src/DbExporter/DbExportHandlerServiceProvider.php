@@ -94,7 +94,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerMigrationsCommand()
     {
-        $this->app->bind('db-exporter:migrations', function($app)
+        $this->app->bind('db-exporter:migrations', function()
         {
             return new Commands\MigrationsGeneratorCommand($this->handler);
         });
