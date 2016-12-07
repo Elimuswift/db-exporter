@@ -76,7 +76,7 @@ This command will export all your database table data into a seed class.
 ```
 php artisan db-exporter:seeds
 ```
-*Important: This **requires your database config file to be updated in `app/config/database.php`**.*
+*Important: This **requires your database config file to be updated in `config/database.php`**.*
 
 
 #### Uploading migrations/seeds to remote server
