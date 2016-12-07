@@ -1,4 +1,4 @@
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/elimuswift/DbExporter/badges/quality-score.png?s=7bd2e14ca4097b979efa1d0d558c3ae17dd870bf)](https://scrutinizer-ci.com/g/elimuswift/DbExporter/)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/Elimuswift/bd-exporter/badges/quality-score.png?s=7bd2e14ca4097b979efa1d0d558c3ae17dd870bf)](https://scrutinizer-ci.com/g/elimuswift/DbExporter/)
 [![Latest Stable Version](https://poser.pugx.org/elimuswift/db-exporter/v/stable.svg)](https://packagist.org/packages/elimuswift/db-exporter) [![Total Downloads](https://poser.pugx.org/elimuswift/db-exporter/d/total)](https://packagist.org/packages/elimuswift/db-exporter) [![Latest Unstable Version](https://poser.pugx.org/elimuswift/db-exporter/v/unstable.svg)](https://packagist.org/packages/elimuswift/db-exporter) [![License](https://poser.pugx.org/elimuswift/db-exporter/license.svg)](https://packagist.org/packages/elimuswift/db-exporter)
 
 # Database Exporter
