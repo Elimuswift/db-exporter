@@ -142,7 +142,7 @@ class DbMigrations extends DbExporter
                         break;
                     case 'enum':
                         $method = 'enum';
-                        $numbers = ', array(' . $options . ')';
+                        $numbers = ', array(' . $numbers . ')';
                         break;
                 }
 
