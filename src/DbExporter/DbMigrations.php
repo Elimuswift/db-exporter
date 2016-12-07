@@ -88,6 +88,10 @@ class DbMigrations extends DbExporter
                 $default = empty($values->Default) ? "" : "->default(\"{$values->Default}\")";
                 $unsigned = strpos($values->Type, "unsigned") === false ? '': '->unsigned()';
 
+                if (in_array($type, ['var', 'varchar', 'enum', 'decimal', 'float'])) {
+                    $para = strpos($values->Type, '(');
+                    $numbers = ", " . substr($values->Type, $para + 1, -1);
+                }
                 switch ($type) {
                     case 'int':
                         $method = 'integer';
@@ -100,21 +104,15 @@ class DbMigrations extends DbExporter
                         break;
                     case 'char':
                     case 'varchar':
-                        $para = strpos($values->Type, '(');
-                        $numbers = ", " . substr($values->Type, $para + 1, -1);
                         $method = 'string';
                         break;
                     case 'float':
                         $method = 'float';
                         break;
                     case 'double':
-                        $para = strpos($values->Type, '('); # 6
-                        $numbers = ", " . substr($values->Type, $para + 1, -1);
                         $method = 'double';
                         break;
-                    case 'decimal':
-                        $para = strpos($values->Type, '(');
-                        $numbers = ", " . substr($values->Type, $para + 1, -1);
+                    case 'decimal':                       
                         $method = 'decimal';
                         break;
                     case 'tinyint':
@@ -144,8 +142,6 @@ class DbMigrations extends DbExporter
                         break;
                     case 'enum':
                         $method = 'enum';
-                        $para = strpos($values->Type, '('); # 4
-                        $options = substr($values->Type, $para + 1, -1);
                         $numbers = ', array(' . $options . ')';
                         break;
                 }
