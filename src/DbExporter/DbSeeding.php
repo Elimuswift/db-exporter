@@ -1,8 +1,10 @@
 <?php 
 namespace Elimuswift\DbExporter;
 
-use Config, DB;
-use Illuminate\Support\Str, File;
+use Config;
+use DB;
+use Illuminate\Support\Str;
+use File;
 
 class DbSeeding extends DbExporter
 {
