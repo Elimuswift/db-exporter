@@ -47,7 +47,7 @@ class DbSeeding extends DbExporter
 
         $filename = Str::camel($this->database) . "TableSeeder";
 
-        file_put_contents(Config::get('db-exporter.export_path.seeds')."/{$filename}.php", $seed);
+        file_put_contents(Config::get('db-exporter.export_path.seeds') . "/{$filename}.php", $seed);
     }
 
     /**
@@ -125,7 +125,7 @@ class DbSeeding extends DbExporter
         $value = addslashes($value);
         if (is_numeric($value)) {
             return "                '{$prop}' => {$value},\n";
-        } elseif($value == '') {
+        } elseif ($value == '') {
             return "                '{$prop}' => NULL,\n";
         } else {
             return "                '{$prop}' => '{$value}',\n";

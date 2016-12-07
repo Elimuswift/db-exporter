@@ -15,7 +15,7 @@ class GeneratorCommand extends Command
     protected function getDatabaseName()
     {
         $connType = Config::get('database.default');
-        $database = Config::get('database.connections.' .$connType );
+        $database = Config::get('database.connections.' . $connType);
 
         return $database['database'];
     }
@@ -52,7 +52,7 @@ class GeneratorCommand extends Command
         );
     }
 
-    protected function fireAction($action,$database)
+    protected function fireAction($action, $database)
     {
         // Grab the options
         $ignore = $this->option('ignore');
