@@ -192,33 +192,16 @@ You can also pass an array of tables to ignore.
 
 
 
-## TODO
-* ~~Export data too. It would be cool if it could also generate a seed file based of the data in the tables. This would be more usefull to run on the production server to get the seed on the development server.~~ **3/1/13**
-* ~~Deploy the migration directly to the production server ready to be migrated. (as an option)~~ **5/1/13**
-* ~~Make commands to do the same thing (export db to migration)~~ **4/1/13**
-* ~~Make commands to do the same thing (export db to seed)~~ **4/1/13**
-* Making the upload to remote available directly when generating the migrations/seeds
-
-
-
-
 ## Credits
-Credits to **@michaeljcalkins** for the [original class](http://paste.laravel.com/1jdw#4) on paste.laravel.com (which goal was to generate migrations from a database). Sadly I couldn't get it working as-is, so I debugged it and decided to make a package out of it, and added a couple a features of my own.
+Credits to **@nWidart** the original creator of package (which goal was to generate migrations from a database). Sadly I couldn't get it working as-is, so I decided to rewrite the package to fit the latest versions of laravel, and added a couple a features of my own.
 
 ## License (MIT)
 
-Copyright (c) 2013 [Nicolas Widart](http://www.nicolaswidart.com) , n.widart@gmail.com
+Copyright (c) 2016 [Albert Leitato](http://www.elimuswift.com) , wizqydy@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick">
-<input type="hidden" name="hosted_button_id" value="YM9989P76FHPE">
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-</form>
 
