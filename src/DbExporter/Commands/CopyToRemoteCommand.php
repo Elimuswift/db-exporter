@@ -13,7 +13,7 @@ class CopyToRemoteCommand extends GeneratorCommand
     protected $name = 'db-exporter:remote';
     protected $description = 'Command to copy the migrations and/or the seeds to a remote host.';
 
-    protected $ignoredFiles =  array('..', '.', '.gitkeep');
+    protected $ignoredFiles = array('..', '.', '.gitkeep');
 
     protected $migrationsPath;
     protected $seedsPath;
@@ -41,7 +41,7 @@ class CopyToRemoteCommand extends GeneratorCommand
             foreach ($this->uploadedFiles as $type => $files) {
                 $this->info(ucfirst($type));
                 foreach ($files as $file) {
-                    $this->sectionMessage($type, $file .' uploaded.');
+                    $this->sectionMessage($type, $file . ' uploaded.');
                 }
             }
 
@@ -79,7 +79,9 @@ class CopyToRemoteCommand extends GeneratorCommand
         $options = $this->option();
         switch ($options) {
             case (($options['seeds'] === true) && ($options['migrations'] === true)):
-                if (!$this->upload('migrations')) return false;
+                if (!$this->upload('migrations')) {
+                    return false;
+                }
                 return $this->upload('seeds');
                
             case $options['migrations'] === true:
@@ -99,14 +101,14 @@ class CopyToRemoteCommand extends GeneratorCommand
         $localPath = "{$what}Path";
 
         $dir = scandir($this->$localPath);
-        $remotePath = Config::get('db-exporter.remote.'.$what);
+        $remotePath = Config::get('db-exporter.remote.' . $what);
 
         // Prepare the progress bar
         $progress = $this->getHelperSet()->get('progress');
         $filesCount = count($dir) - count($this->ignoredFiles);
         $progress->start($this->output, $filesCount);
         $this->info(ucfirst($what));
-        foreach($dir as $file) {
+        foreach ($dir as $file) {
             if (in_array($file, $this->ignoredFiles)) {
                 continue;
             }
@@ -116,7 +118,7 @@ class CopyToRemoteCommand extends GeneratorCommand
 
             // Copy the files
             SSH::into($this->getRemoteName())->put(
-                $this->$localPath .'/' . $file,
+                $this->$localPath . '/' . $file,
                 $remotePath . $file
             );
             $progress->advance();

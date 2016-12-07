@@ -44,7 +44,7 @@ class DbMigrations extends DbExporter
 
         $schema = $this->compile();
         $filename = date('Y_m_d_His') . "_create_" . $this->database . "_database.php";
-        static::$filePath = Config::get('db-exporter.export_path.migrations')."{$filename}";
+        static::$filePath = Config::get('db-exporter.export_path.migrations') . "{$filename}";
 
         file_put_contents(static::$filePath, $schema);
 
@@ -156,8 +156,9 @@ class DbMigrations extends DbExporter
             $tableIndexes = $this->getTableIndexes($value['table_name']);
             if (!is_null($tableIndexes) && count($tableIndexes)){
             	foreach ($tableIndexes as $index) {
-                    if(Str::endsWith($index['Key_name'], '_index'))
-                	   $up .= '                $' . "table->index('" . $index['Key_name'] . "');\n";
+                    if(Str::endsWith($index['Key_name'], '_index')) {
+                                    	   $up .= '                $' . "table->index('" . $index['Key_name'] . "');\n";
+                    }
                     }
             	}
 
@@ -167,14 +168,14 @@ class DbMigrations extends DbExporter
             * @var array $tableConstraints 
             */
             $tableConstraints = $this->getTableConstraints($value['table_name']);
-            if (!is_null($tableConstraints) && count($tableConstraints)){
+            if (!is_null($tableConstraints) && count($tableConstraints)) {
             $Constraint = $ConstraintDown = "
             Schema::table('{$value['table_name']}', function(Blueprint $" . "table) {\n";
             $tables = [];
                 foreach ($tableConstraints as $foreign) {
-                    if(!in_array($foreign->Field, $tables)){
-                        $ConstraintDown .= '                $' . "table->dropForeign('" . $foreign->Field. "');\n";
-                        $Constraint .= '                $' . "table->foreign('" . $foreign->Field. "')->references('" . $foreign->References . "')->on('" . $foreign->ON. "')->onDelete('" . $foreign->onDelete. "');\n";
+                    if (!in_array($foreign->Field, $tables)) {
+                        $ConstraintDown .= '                $' . "table->dropForeign('" . $foreign->Field . "');\n";
+                        $Constraint .= '                $' . "table->foreign('" . $foreign->Field . "')->references('" . $foreign->References . "')->on('" . $foreign->ON . "')->onDelete('" . $foreign->onDelete . "');\n";
                         $tables[$foreign->Field] = $foreign->Field;
                     }
                 }
@@ -206,24 +207,24 @@ class DbMigrations extends DbExporter
 
         // prevent of failure when no table
         if (!is_null($this->schema) && count($this->schema)) {
-	        foreach ($this->schema as $name => $values) {
-	            // check again for ignored tables
-	            if (in_array($name, self::$ignore)) {
-	                continue;
-	            }
-	            $upSchema .= "
+            foreach ($this->schema as $name => $values) {
+                // check again for ignored tables
+                if (in_array($name, self::$ignore)) {
+                    continue;
+                }
+                $upSchema .= "
 	    /**
 	     * Table: {$name}
 	     */
 	    {$values['up']}";
                 $upConstraint.="
                 {$values['constraint']}";
-                 $downConstraint.="
+                    $downConstraint.="
                 {$values['constraint_down']}";
 
-	            $downSchema .= "
+                $downSchema .= "
 	            {$values['down']}";
-	        }
+            }
         }
 
         // Grab the template

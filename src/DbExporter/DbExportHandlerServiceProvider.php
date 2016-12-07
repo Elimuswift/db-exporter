@@ -33,7 +33,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
 
     public function register()
     {
-         $this->publishes([
+            $this->publishes([
             realpath(__DIR__ .'/../').'/config/db-exporter.php' => config_path('db-exporter.php'),
         ]);
 
@@ -41,7 +41,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
             realpath(__DIR__ .'/../').'/config/db-exporter.php', 'db-exporter'
         );
 
-       $this->app->register(DbMigrationsServiceProvider::class);
+        $this->app->register(DbMigrationsServiceProvider::class);
 
         // Load the classes
         $this->loadClasses();

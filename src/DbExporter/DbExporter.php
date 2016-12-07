@@ -79,7 +79,7 @@ abstract class DbExporter
     {
         return DB::table('information_schema.key_column_usage')
             ->distinct()
-            ->join('information_schema.REFERENTIAL_CONSTRAINTS', 'REFERENTIAL_CONSTRAINTS.CONSTRAINT_NAME','=','key_column_usage.CONSTRAINT_NAME')
+            ->join('information_schema.REFERENTIAL_CONSTRAINTS', 'REFERENTIAL_CONSTRAINTS.CONSTRAINT_NAME', '=', 'key_column_usage.CONSTRAINT_NAME')
             ->where('key_column_usage.table_schema', '=', $this->database)
             ->where('key_column_usage.table_name', '=', $table)
             ->get($this->constraints);
@@ -92,7 +92,7 @@ abstract class DbExporter
      */
     protected function getTableData($table)
     {
-        return DB::table($this->database.'.'.$table)->get();
+        return DB::table($this->database . '.' . $table)->get();
     }
 
     /**

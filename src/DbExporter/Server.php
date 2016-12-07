@@ -22,7 +22,7 @@ class Server
         $dir = scandir($localPath);
         $remotePath = Config::get('db-exporter.remote.' . $what);
 
-        foreach($dir as $file) {
+        foreach ($dir as $file) {
             if (in_array($file, $this->ignoredFiles)) {
                 continue;
             }
@@ -32,7 +32,7 @@ class Server
 
             // Copy the files
             SSH::into($this->getRemoteName())->put(
-                $localPath .'/' . $file,
+                $localPath . '/' . $file,
                 $remotePath . $file
             );
         }
