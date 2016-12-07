@@ -18,7 +18,7 @@ class DbExportHandler
      * @param DbMigrations $DbMigrations
      * @param DbSeeding $DbSeeding
      */
-    function __construct(DbMigrations $DbMigrations, DbSeeding $DbSeeding)
+    public function __construct(DbMigrations $DbMigrations, DbSeeding $DbSeeding)
     {
         $this->migrator = $DbMigrations;
         $this->seeder = $DbSeeding;

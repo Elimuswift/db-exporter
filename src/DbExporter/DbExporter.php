@@ -16,6 +16,35 @@ abstract class DbExporter
      * Get all the tables
      * @return mixed
      */
+    public $database;
+
+    /**
+     * Select fields
+     *
+     * @var array $selects
+     **/
+    protected $selects = array(
+        'column_name as Field',
+        'column_type as Type',
+        'is_nullable as Null',
+        'column_key as Key',
+        'column_default as Default',
+        'extra as Extra',
+        'data_type as Data_Type'
+    );
+    /**
+     * Select fields from  constraints
+     *
+     * @var array $constraints
+     **/
+    protected $constraints = array(
+        'key_column_usage.table_name as Table',
+        'key_column_usage.column_name as Field',
+        'key_column_usage.referenced_table_name as ON',
+        'key_column_usage.referenced_column_name as References',
+        'REFERENTIAL_CONSTRAINTS.UPDATE_RULE as onUpdate',
+        'REFERENTIAL_CONSTRAINTS.DELETE_RULE as onDelete',
+    );
     protected function getTables()
     {
         $pdo = DB::connection()->getPdo();

@@ -23,8 +23,16 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected $handler;
 
-    public function boot()
+    public function boot(DbMigrations $migrator)
     {
+        // Instatiate a new DbMigrations class to send to the handler
+        $this->migrator = $migrator;
+
+        // Instatiate a new DbSeeding class to send to the handler
+        $this->seeder = new DbSeeding($migrator->database);
+
+        // Instantiate the handler
+        $this->handler = new DbExportHandler($this->migrator, $this->seeder);
     }
 
     public function register()
@@ -57,27 +65,9 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function loadClasses()
     {
-        // Instatiate a new DbMigrations class to send to the handler
-        $this->migrator = new DbMigrations($this->getDatabaseName());
-
-        // Instatiate a new DbSeeding class to send to the handler
-        $this->seeder = new DbSeeding($this->getDatabaseName());
-
-        // Instantiate the handler
-        $this->handler = new DbExportHandler($this->migrator, $this->seeder);
+        
     }
 
-    /**
-     * Get the database name from the app/config/database.php file
-     * @return String
-     */
-    private function getDatabaseName()
-    {
-        $connType = Config::get('database.default');
-        $database = Config::get('database.connections.' .$connType );
-
-        return $database['database'];
-    }
 
     public function provides()
     {
@@ -104,7 +94,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerMigrationsCommand()
     {
-        $this->app['db-exporter:migrations'] = $this->app->share(function()
+        $this->app->bind('db-exporter:migrations', function($app)
         {
             return new Commands\MigrationsGeneratorCommand($this->handler);
         });
@@ -115,7 +105,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerSeedsCommand()
     {
-        $this->app['db-exporter:seeds'] = $this->app->share(function()
+        $this->app->bind('db-exporter:seeds', function()
         {
             return new Commands\SeedGeneratorCommand($this->handler);
         });
@@ -123,7 +113,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
 
     protected function registerRemoteCommand()
     {
-        $this->app['db-exporter:remote'] = $this->app->share(function()
+        $this->app->bind('db-exporter:remote', function()
         {
             return new Commands\CopyToRemoteCommand(new Server);
         });

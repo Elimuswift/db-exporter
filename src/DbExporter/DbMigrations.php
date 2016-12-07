@@ -9,25 +9,7 @@ use Elimuswift\DbExporter\Exceptions\InvalidDatabaseException;
 
 class DbMigrations extends DbExporter
 {
-    protected $database;
-
-    protected $selects = array(
-        'column_name as Field',
-        'column_type as Type',
-        'is_nullable as Null',
-        'column_key as Key',
-        'column_default as Default',
-        'extra as Extra',
-        'data_type as Data_Type'
-    );
-    protected $constraints = array(
-        'key_column_usage.table_name as Table',
-        'key_column_usage.column_name as Field',
-        'key_column_usage.referenced_table_name as ON',
-        'key_column_usage.referenced_column_name as References',
-        'REFERENTIAL_CONSTRAINTS.UPDATE_RULE as onUpdate',
-        'REFERENTIAL_CONSTRAINTS.DELETE_RULE as onDelete',
-    );
+   
 
     protected $schema;
 
@@ -104,63 +86,63 @@ class DbMigrations extends DbExporter
                 $numbers = "";
                 $nullable = $values->Null == "NO" ? "" : "->nullable()";
                 $default = empty($values->Default) ? "" : "->default(\"{$values->Default}\")";
-                $unsigned = strpos($values->Type, "unsigned") === false ? '' : '->unsigned()';
+                $unsigned = strpos($values->Type, "unsigned") === false ? '': '->unsigned()';
 
                 switch ($type) {
-                    case 'int' :
+                    case 'int':
                         $method = 'integer';
                         break;
-                    case 'smallint' :
+                    case 'smallint':
                         $method = 'smallInteger';
                         break;
-                    case 'bigint' :
+                    case 'bigint':
                         $method = 'bigInteger';
                         break;
-                    case 'char' :
-                    case 'varchar' :
+                    case 'char':
+                    case 'varchar':
                         $para = strpos($values->Type, '(');
                         $numbers = ", " . substr($values->Type, $para + 1, -1);
                         $method = 'string';
                         break;
-                    case 'float' :
+                    case 'float':
                         $method = 'float';
                         break;
-                    case 'double' :
+                    case 'double':
                         $para = strpos($values->Type, '('); # 6
                         $numbers = ", " . substr($values->Type, $para + 1, -1);
                         $method = 'double';
                         break;
-                    case 'decimal' :
+                    case 'decimal':
                         $para = strpos($values->Type, '(');
                         $numbers = ", " . substr($values->Type, $para + 1, -1);
                         $method = 'decimal';
                         break;
-                    case 'tinyint' :
+                    case 'tinyint':
                         $method = 'boolean';
                         break;
-                    case 'date' :
+                    case 'date':
                         $method = 'date';
                         break;
-                    case 'timestamp' :
+                    case 'timestamp':
                         $method = 'timestamp';
                         break;
-                    case 'datetime' :
+                    case 'datetime':
                         $method = 'dateTime';
                         break;
-                    case 'longtext' :
+                    case 'longtext':
                         $method = 'longText';
                         break;
-                    case 'mediumtext' :
+                    case 'mediumtext':
                         $method = 'mediumText';
                         break;
-                    case 'text' :
+                    case 'text':
                         $method = 'text';
                         break;
                     case 'longblob':
-                    case 'blob' :
+                    case 'blob':
                         $method = 'binary';
                         break;
-                    case 'enum' :
+                    case 'enum':
                         $method = 'enum';
                         $para = strpos($values->Type, '('); # 4
                         $options = substr($values->Type, $para + 1, -1);
@@ -185,6 +167,9 @@ class DbMigrations extends DbExporter
 
             $up .= "            });\n\n";
             $Constraint = $ConstraintDown = "";
+            /** 
+            * @var array $tableConstraints 
+            */
             $tableConstraints = $this->getTableConstraints($value['table_name']);
             if (!is_null($tableConstraints) && count($tableConstraints)){
             $Constraint = $ConstraintDown = "

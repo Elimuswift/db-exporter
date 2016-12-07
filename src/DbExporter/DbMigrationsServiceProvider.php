@@ -31,11 +31,11 @@ class DbMigrationsServiceProvider extends ServiceProvider {
     public function register()
     {
 
-        $this->app->singleton('DbMigrations', function()
+        $this->app->singleton(DbMigrations::class, function()
         {
             $connType = Config::get('database.default');
             $database = Config::get('database.connections.' .$connType );
-            return new DbMigrations($database);
+            return new DbMigrations($database['database']);
         });
         
 

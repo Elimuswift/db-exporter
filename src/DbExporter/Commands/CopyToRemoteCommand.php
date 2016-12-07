@@ -81,16 +81,16 @@ class CopyToRemoteCommand extends GeneratorCommand
             case (($options['seeds'] === true) && ($options['migrations'] === true)):
                 if (!$this->upload('migrations')) return false;
                 return $this->upload('seeds');
-                break;
+               
             case $options['migrations'] === true:
                 // // $this->server->upload('migrations');
                 $this->commandOptions = 'migrations';
                 return $this->upload('migrations');
-                break;
+               
             case $options['seeds'] === true:
                 $this->commandOptions = 'seeds';
                 return $this->upload('seeds');
-                break;
+                
         }
     }
 

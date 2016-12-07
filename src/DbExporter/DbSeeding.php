@@ -11,7 +11,7 @@ class DbSeeding extends DbExporter
     /**
      * @var String
      */
-    protected $database;
+    public $database;
 
     /**
      * @var String
