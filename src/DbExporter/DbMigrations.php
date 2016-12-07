@@ -91,7 +91,65 @@ class DbMigrations extends DbExporter
                 if (in_array($type, ['var', 'varchar', 'enum', 'decimal', 'float'])) {
                     $para = strpos($values->Type, '(');
                     $numbers = ", " . substr($values->Type, $para + 1, -1);
+                    if($type==='enum'){
+                        $numbers = ', array(' . $numbers . ')';
+                    }
                 }
+                $method = $this->columnType($type);
+
+                if ($values->Key == 'PRI') {
+                    $method = 'increments';
+                }
+
+                $up .= "                $" . "table->{$method}('{$values->Field}'{$numbers}){$nullable}{$default}{$unsigned};\n";
+            }
+
+            $tableIndexes = $this->getTableIndexes($value['table_name']);
+            if (!is_null($tableIndexes) && count($tableIndexes)){
+            	foreach ($tableIndexes as $index) {
+                    if(Str::endsWith($index['Key_name'], '_index'))
+                	   $up .= '                $' . "table->index('" . $index['Key_name'] . "');\n";
+                    }
+            	}
+
+            $up .= "            });\n\n";
+            $Constraint = $ConstraintDown = "";
+            /** 
+            * @var array $tableConstraints 
+            */
+            $tableConstraints = $this->getTableConstraints($value['table_name']);
+            if (!is_null($tableConstraints) && count($tableConstraints)){
+            $Constraint = $ConstraintDown = "
+            Schema::table('{$value['table_name']}', function(Blueprint $" . "table) {\n";
+            $tables = [];
+                foreach ($tableConstraints as $foreign) {
+                    if(!in_array($foreign->Field, $tables)){
+                        $ConstraintDown .= '                $' . "table->dropForeign('" . $foreign->Field. "');\n";
+                        $Constraint .= '                $' . "table->foreign('" . $foreign->Field. "')->references('" . $foreign->References . "')->on('" . $foreign->ON. "')->onDelete('" . $foreign->onDelete. "');\n";
+                        $tables[$foreign->Field] = $foreign->Field;
+                    }
+                }
+                $Constraint .= "            });\n\n";
+                $ConstraintDown .= "            });\n\n";
+            }
+            $this->schema[$value['table_name']] = array(
+                'up'   => $up,
+                'constraint' => $Constraint,
+                'constraint_down' => $ConstraintDown,
+                'down' => $down
+            );
+        }
+
+        return $this;
+    }
+    /**
+     * undocumented function
+     *
+     * @return void
+     * @author 
+     **/
+    protected function columnType($type)
+    {
                 switch ($type) {
                     case 'int':
                         $method = 'integer';
@@ -142,54 +200,9 @@ class DbMigrations extends DbExporter
                         break;
                     case 'enum':
                         $method = 'enum';
-                        $numbers = ', array(' . $numbers . ')';
                         break;
                 }
-
-                if ($values->Key == 'PRI') {
-                    $method = 'increments';
-                }
-
-                $up .= "                $" . "table->{$method}('{$values->Field}'{$numbers}){$nullable}{$default}{$unsigned};\n";
-            }
-
-            $tableIndexes = $this->getTableIndexes($value['table_name']);
-            if (!is_null($tableIndexes) && count($tableIndexes)){
-            	foreach ($tableIndexes as $index) {
-                    if(Str::endsWith($index['Key_name'], '_index'))
-                	   $up .= '                $' . "table->index('" . $index['Key_name'] . "');\n";
-                    }
-            	}
-
-            $up .= "            });\n\n";
-            $Constraint = $ConstraintDown = "";
-            /** 
-            * @var array $tableConstraints 
-            */
-            $tableConstraints = $this->getTableConstraints($value['table_name']);
-            if (!is_null($tableConstraints) && count($tableConstraints)){
-            $Constraint = $ConstraintDown = "
-            Schema::table('{$value['table_name']}', function(Blueprint $" . "table) {\n";
-            $tables = [];
-                foreach ($tableConstraints as $foreign) {
-                    if(!in_array($foreign->Field, $tables)){
-                        $ConstraintDown .= '                $' . "table->dropForeign('" . $foreign->Field. "');\n";
-                        $Constraint .= '                $' . "table->foreign('" . $foreign->Field. "')->references('" . $foreign->References . "')->on('" . $foreign->ON. "')->onDelete('" . $foreign->onDelete. "');\n";
-                        $tables[$foreign->Field] = $foreign->Field;
-                    }
-                }
-                $Constraint .= "            });\n\n";
-                $ConstraintDown .= "            });\n\n";
-            }
-            $this->schema[$value['table_name']] = array(
-                'up'   => $up,
-                'constraint' => $Constraint,
-                'constraint_down' => $ConstraintDown,
-                'down' => $down
-            );
-        }
-
-        return $this;
+            return $method;
     }
 
     /**
