@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Elimuswift\\DbExporter": "src/"
+            "Elimuswift\\DbExporter\\": "src/"
         }
     },
     "minimum-stability": "dev"
