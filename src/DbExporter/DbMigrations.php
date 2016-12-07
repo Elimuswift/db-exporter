@@ -22,7 +22,7 @@ class DbMigrations extends DbExporter
      * @param String $database
      * @throw InvalidDatabaseException
      */
-    function __construct($database)
+    public function __construct($database)
     {
         if (empty($database)) {
             throw new InvalidDatabaseException('No database set in app/config/database.php');

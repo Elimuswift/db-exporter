@@ -27,7 +27,7 @@ class DbSeeding extends DbExporter
      * Set the database name
      * @param String $database
      */
-    function __construct($database)
+    public function __construct($database)
     {
         $this->database = $database;
     }

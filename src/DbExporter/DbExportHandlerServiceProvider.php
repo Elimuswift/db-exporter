@@ -28,11 +28,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         // Instatiate a new DbMigrations class to send to the handler
         $this->migrator = $migrator;
 
-        // Instatiate a new DbSeeding class to send to the handler
-        $this->seeder = new DbSeeding($migrator->database);
-
-        // Instantiate the handler
-        $this->handler = new DbExportHandler($this->migrator, $this->seeder);
+        
     }
 
     public function register()
@@ -94,9 +90,9 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerMigrationsCommand()
     {
-        $this->app->bind('db-exporter:migrations', function()
+        $this->app->bind('db-exporter:migrations', function($app)
         {
-            return new Commands\MigrationsGeneratorCommand($this->handler);
+            return new Commands\MigrationsGeneratorCommand($app[DbExportHandler::class]);
         });
     }
 
@@ -105,9 +101,9 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerSeedsCommand()
     {
-        $this->app->bind('db-exporter:seeds', function()
+        $this->app->bind('db-exporter:seeds', function($app)
         {
-            return new Commands\SeedGeneratorCommand($this->handler);
+            return new Commands\SeedGeneratorCommand($app[DbExportHandler::class]);
         });
     }
 
@@ -124,9 +120,13 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerDbExportHandler()
     {
-        $this->app['DbExportHandler'] = $this->app->share(function()
+        $this->app->bind(DbExportHandler::class, function($app)
         {
-            return $this->handler;
+            // Instatiate a new DbSeeding class to send to the handler
+        $seeder = new DbSeeding($app[DbMigrations::class]->database);
+
+        // Instantiate the handler
+        return new DbExportHandler($app[DbMigrations::class], $seeder);
         });
     }
 
