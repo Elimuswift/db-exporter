@@ -44,7 +44,7 @@ class DbMigrations extends DbExporter
 
         $schema = $this->compile();
         $filename = date('Y_m_d_His') . "_create_" . $this->database . "_database.php";
-        static::$filePath = Config::get('db-exporter.export_path.migrations') . "{$filename}";
+        static::$filePath = Config::get('db-exporter.export_path.migrations') . "/{$filename}";
 
         file_put_contents(static::$filePath, $schema);
 
@@ -85,12 +85,13 @@ class DbMigrations extends DbExporter
                 $numbers = "";
                 $nullable = $values->Null == "NO" ? "" : "->nullable()";
                 $default = empty($values->Default) ? "" : "->default(\"{$values->Default}\")";
+                $default= $values->Default =='CURRENT_TIMESTAMP' ? '->useCurrent()':$default;
                 $unsigned = strpos($values->Type, "unsigned") === false ? '': '->unsigned()';
 
                 if (in_array($type, ['var', 'varchar', 'enum', 'decimal', 'float'])) {
                     $para = strpos($values->Type, '(');
-                    $opt = ", " . substr($values->Type, $para + 1, -1);
-                    $numbers = $type== 'enum' ? ', array(' . $opt . ')' : $opt;
+                    $opt = substr($values->Type, $para + 1, -1);
+                    $numbers = $type== 'enum' ? ', array(' . $opt . ')' : ",  " .$opt;
                 }
                 $method = $this->columnType($type);
                 if ($values->Key == 'PRI') {
@@ -104,7 +105,7 @@ class DbMigrations extends DbExporter
             if (!is_null($tableIndexes) && count($tableIndexes)){
             	foreach ($tableIndexes as $index) {
                     if(Str::endsWith($index['Key_name'], '_index')) {
-                                    	   $up .= '                $' . "table->index('" . $index['Key_name'] . "');\n";
+                                    	   $up .= '                $' . "table->index('" . $index['Column_name'] . "');\n";
                     }
                     }
             	}
@@ -183,10 +184,10 @@ class DbMigrations extends DbExporter
         }
 
         // Grab the template
-        $template = File::get(__DIR__ . '/templates/migration.txt');
+        $template = File::get(__DIR__ . '/stubs/migration.stub');
 
         // Replace the classname
-        $template = str_replace('{{name}}', "Create" . Str::camel(Str::title($this->database)) . "Database", $template);
+        $template = str_replace('{{name}}', "Create" . ucfirst(Str::camel($this->database)) . "Database", $template);
 
         // Replace the up and down values
         $template = str_replace('{{up}}', $upSchema, $template);

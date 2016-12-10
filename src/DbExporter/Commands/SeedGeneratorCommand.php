@@ -1,8 +1,6 @@
 <?php 
 namespace Elimuswift\DbExporter\Commands;
 
-
-use Elimuswift\DbExporter\DbExporter;
 use Elimuswift\DbExporter\DbExportHandler;
 use Symfony\Component\Console\Input\InputOption;
 use Config;
@@ -52,7 +50,7 @@ class SeedGeneratorCommand extends GeneratorCommand
 
     private function getFilename()
     {
-        $filename = Str::camel($this->getDatabaseName()) . "TableSeeder";
+        $filename = ucfirst(Str::camel($this->getDatabaseName())) . "TableSeeder";
         return Config::get('db-exporter.export_path.seeds') . "/{$filename}.php";
     }
 

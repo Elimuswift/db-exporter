@@ -45,7 +45,7 @@ class DbSeeding extends DbExporter
 
         $seed = $this->compile();
 
-        $filename = Str::camel($this->database) . "TableSeeder";
+        $filename = ucfirst(Str::camel($this->database)) . "TableSeeder";
 
         file_put_contents(Config::get('db-exporter.export_path.seeds') . "/{$filename}.php", $seed);
     }
@@ -110,10 +110,10 @@ class DbSeeding extends DbExporter
     protected function compile()
     {
         // Grab the template
-        $template = File::get(__DIR__ . '/templates/seed.txt');
+        $template = File::get(__DIR__ . '/stubs/seed.stub');
 
         // Replace the classname
-        $template = str_replace('{{className}}', Str::camel($this->database) . "TableSeeder", $template);
+        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . "TableSeeder", $template);
         $template = str_replace('{{run}}', $this->seedingStub, $template);
 
         return $template;

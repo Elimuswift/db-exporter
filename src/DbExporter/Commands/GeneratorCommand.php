@@ -3,6 +3,7 @@ namespace Elimuswift\DbExporter\Commands;
 
 use Config;
 use Illuminate\Console\Command;
+use Elimuswift\DbExporter\DbExporter;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
