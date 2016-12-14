@@ -68,7 +68,7 @@ class DbExportHandler
      * @param $tables
      * @return $this
      */
-    public function ignore($tables)
+    public function ignore(...$tables)
     {
         DbExporter::$ignore = array_merge(DbExporter::$ignore, (array)$tables);
 

@@ -1,13 +1,13 @@
 <?php
 
 return array(
-    'remote' => array(
-        'name' => 'production',
-        'migrations' => '/home/htdocs/testing/migrations/',
-        'seeds' => '/home/htdocs/testing/seeds/'
+    'backup' => array(
+        'disk' => 'local',
+        'migrations' => 'backup/migrations/',
+        'seeds' => 'backup/seeds/'
     ),
     'export_path' => array(
         'migrations' => database_path('backup/migrations'),
-        'seeds' => database_path('backup/seeds')
+        'seeds' => database_path('seeds')
     )
 );

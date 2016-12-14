@@ -1,8 +1,8 @@
 <?php 
 namespace Elimuswift\DbExporter\Commands;
 
-use SSH;
 use Config;
+use Storage;
 use Elimuswift\DbExporter\Server;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,27 +10,21 @@ use Symfony\Component\Console\Input\InputArgument;
 class CopyToRemoteCommand extends GeneratorCommand
 {
 
-    protected $name = 'db-exporter:remote';
+    protected $name = 'db-exporter:backup';
+
     protected $description = 'Command to copy the migrations and/or the seeds to a remote host.';
 
-    protected $ignoredFiles = array('..', '.', '.gitkeep');
+    protected $ignoredFiles = ['..', '.', '.gitkeep'];
 
-    protected $migrationsPath;
-    protected $seedsPath;
     protected $uploadedFiles;
+
     protected $commandOptions;
 
-    protected $server;
 
-    public function __construct(Server $server)
+    public function __construct()
     {
         parent::__construct();
 
-        // Set the paths
-        $this->migrationsPath = database_path("backup/migrations");
-        $this->seedsPath = database_path("backup/seeds");
-
-        $this->server = $server;
     }
 
     public function fire()
@@ -39,6 +33,7 @@ class CopyToRemoteCommand extends GeneratorCommand
         if ($succes) {
             // Inform what files have been uploaded
             foreach ($this->uploadedFiles as $type => $files) {
+                $this->line("\n");
                 $this->info(ucfirst($type));
                 foreach ($files as $file) {
                     $this->sectionMessage($type, $file . ' uploaded.');
@@ -49,19 +44,13 @@ class CopyToRemoteCommand extends GeneratorCommand
         }
     }
 
-    protected function getArguments()
-    {
-        return array(
-            array('remote', InputArgument::REQUIRED, 'The remote name.')
-        );
-    }
 
     protected function getOptions()
     {
-        return array(
-            array('migrations', 'm', InputOption::VALUE_NONE, 'Upload the migrations to the remote host.', null),
-            array('seeds', 's', InputOption::VALUE_NONE, 'Upload the seeds to the remote host.', null)
-        );
+        return [
+                    ['migrations', 'm', InputOption::VALUE_NONE, 'Upload the migrations to a storage.', null],
+                    ['seeds', 's', InputOption::VALUE_NONE, 'Upload the seeds to the remote host.', null]
+        ];
     }
 
     private function getRemoteName()
@@ -85,7 +74,6 @@ class CopyToRemoteCommand extends GeneratorCommand
                 return $this->upload('seeds');
                
             case $options['migrations'] === true:
-                // // $this->server->upload('migrations');
                 $this->commandOptions = 'migrations';
                 return $this->upload('migrations');
                
@@ -98,16 +86,15 @@ class CopyToRemoteCommand extends GeneratorCommand
 
     private function upload($what)
     {
-        $localPath = "{$what}Path";
-
-        $dir = scandir($this->$localPath);
+        $localPath = Config::get('db-exporter.export_path.'.$what);
+        $dir = scandir($localPath);
         $remotePath = Config::get('db-exporter.remote.' . $what);
-
-        // Prepare the progress bar
-        $progress = $this->getHelperSet()->get('progress');
-        $filesCount = count($dir) - count($this->ignoredFiles);
-        $progress->start($this->output, $filesCount);
+        $this->line("\n");
         $this->info(ucfirst($what));
+        // Prepare the progress bar
+        
+        $filesCount = count($dir) - count($this->ignoredFiles);
+        $progress = $this->output->createProgressBar($filesCount);
         foreach ($dir as $file) {
             if (in_array($file, $this->ignoredFiles)) {
                 continue;
@@ -117,14 +104,19 @@ class CopyToRemoteCommand extends GeneratorCommand
             $this->uploadedFiles[$what][] = $remotePath . $file;
 
             // Copy the files
-            SSH::into($this->getRemoteName())->put(
-                $this->$localPath . '/' . $file,
-                $remotePath . $file
+            Storage::disk($this->getDiskName())->put(
+                $remotePath . $file,
+                $localPath . '/' . $file
             );
             $progress->advance();
         }
         $progress->finish();
 
         return true;
+    }
+    private function getDiskName()
+    {
+        // For now static from he config file.
+        return Config::get('db-exporter.remote.disk');
     }
 }

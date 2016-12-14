@@ -3,6 +3,7 @@ namespace Elimuswift\DbExporter;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\AliasLoader;
 
 class DbMigrationsServiceProvider extends ServiceProvider {
 
@@ -20,6 +21,10 @@ class DbMigrationsServiceProvider extends ServiceProvider {
      */
     public function boot()
     {
+
+       $loader = AliasLoader::getInstance();
+       $loader->alias('DbMigrations', 'Facades\DbMigrations');
+
 
     }
 
@@ -39,11 +44,7 @@ class DbMigrationsServiceProvider extends ServiceProvider {
         });
         
 
-        $this->app->booting(function()
-            {
-                $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-                $loader->alias('DbMigrations', 'Elimuswift\DbExporter\Facades\DbMigrations');
-            });
+        
     }
 
     /**

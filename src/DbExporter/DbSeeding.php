@@ -78,23 +78,23 @@ class DbSeeding extends DbExporter
 
             foreach ($tableData as $obj) {
                 $insertStub .= "
-            array(\n";
+            [\n";
                 foreach ($obj as $prop => $value) {
                     $insertStub .= $this->insertPropertyAndValue($prop, $value);
                 }
 
                 if (count($tableData) > 1) {
-                    $insertStub .= "            ),\n";
+                    $insertStub .= "            ],\n";
                 } else {
-                    $insertStub .= "            )\n";
+                    $insertStub .= "            ]\n";
                 }
             }
 
             if ($this->hasTableData($tableData)) {
                 $stub .= "
-        DB::table('" . $tableName . "')->insert(array(
+        DB::table('" . $tableName . "')->insert([
             {$insertStub}
-        ));";
+        ]);";
             }
         }
 

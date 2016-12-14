@@ -1,7 +1,8 @@
 <?php 
 namespace Elimuswift\DbExporter;
 
-use Config, SSH;
+use Config;
+use Storage;
 
 class Server
 {
@@ -17,12 +18,10 @@ class Server
 
     public function upload($what)
     {
-        $localPath = "{$what}Path";
-
-        $dir = scandir($localPath);
+        
         $remotePath = Config::get('db-exporter.remote.' . $what);
 
-        foreach ($dir as $file) {
+        foreach ($this->files($what) as $file) {
             if (in_array($file, $this->ignoredFiles)) {
                 continue;
             }
@@ -31,18 +30,24 @@ class Server
             self::$uploadedFiles[$what][] = $remotePath . $file;
 
             // Copy the files
-            SSH::into($this->getRemoteName())->put(
-                $localPath . '/' . $file,
-                $remotePath . $file
+            Storage::disk($this->getDiskName())->put(
+                $remotePath . $file,
+                $localPath . '/' . $file
             );
         }
 
         return true;
     }
+    public function files($value='')
+    {
+        $localPath = Config::get('db-exporter.export_path.'.$what);
 
-    private function getRemoteName()
+        return scandir($localPath);
+    }
+
+    private function getDiskName()
     {
         // For now static from he config file.
-        return Config::get('db-exporter.remote.name');
+        return Config::get('db-exporter.remote.disk');
     }
 }
