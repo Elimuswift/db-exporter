@@ -1,13 +1,20 @@
 <?php 
 namespace Elimuswift\DbExporter;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\ServiceProvider;
 
 
 class DbExportHandlerServiceProvider extends ServiceProvider
 {
-    protected $defer = false;
+
+    /**
+     * Defer loading of services provided by db-exporter
+     *
+     * @var boolean $defer
+     **/
+    protected $defer = true;
 
     /**
      * @var DbMigrations $migrator
@@ -36,8 +43,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         $this->migrator = $migrator;
          // Load the alias
         $this->loadAlias();
-             // Handle the artisan commands
-        $this->registerCommands();
+       
 
         
     }
@@ -47,6 +53,8 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         $this->app->register(DbMigrationsServiceProvider::class);
         // Register the base export handler class
         $this->registerDbExportHandler();
+         // Handle the artisan commands
+        $this->registerCommands();
     }
 
     public function provides()
@@ -59,9 +67,16 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     public function registerCommands()
     {
-        $this->registerMigrationsCommand();
-        $this->registerSeedsCommand();
-        $this->registerRemoteCommand();
+        $commands = ['Migrations', 'Seeds', 'Backup'];
+
+        foreach ($commands as $command) {
+            $this->{"register{$command}Command"}();
+        }
+        // Once the commands are registered in the application IoC container we will
+        // register them with the Artisan start event so that these are available
+        // when the Artisan application actually starts up and is getting used.
+        $this->commands('db-exporter.migrations', 'db-exporter.seeds', 'db-exporter.backup');
+                
      }
 
     /**
@@ -69,7 +84,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerMigrationsCommand()
     {
-        $this->app->bind('db-exporter:migrations', function($app)
+        $this->app->singleton('db-exporter.migrations', function($app)
         {
             return new Commands\MigrationsGeneratorCommand($app[DbExportHandler::class]);
         });
@@ -80,15 +95,15 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function registerSeedsCommand()
     {
-        $this->app->bind('db-exporter:seeds', function($app)
+        $this->app->singleton('db-exporter.seeds', function($app)
         {
             return new Commands\SeedGeneratorCommand($app[DbExportHandler::class]);
         });
     }
 
-    protected function registerRemoteCommand()
+    protected function registerBackupCommand()
     {
-        $this->app->bind('db-exporter:backup', function()
+        $this->app->singleton('db-exporter.backup', function()
         {
             return new Commands\CopyToRemoteCommand(new Server);
         });
@@ -118,9 +133,8 @@ class DbExportHandlerServiceProvider extends ServiceProvider
      */
     protected function loadAlias()
     {
-
-            $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-            $loader->alias('DbExporter', Facades\DbExportHandler::class);
+        $loader = AliasLoader::getInstance();
+        $loader->alias('DbExporter', Facades\DbExportHandler::class);
     }
 
 }
