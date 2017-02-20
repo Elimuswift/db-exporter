@@ -19,7 +19,7 @@ class Server
     public function upload($what)
     {
         
-        $remotePath = Config::get('db-exporter.remote.' . $what);
+        $remotePath = Config::get('db-exporter.backup.' . $what);
 
         foreach ($this->files($what) as $file) {
             if (in_array($file, $this->ignoredFiles)) {
@@ -31,14 +31,14 @@ class Server
 
             // Copy the files
             Storage::disk($this->getDiskName())->put(
-                $remotePath . $file,
+                $remotePath .'/'.$file,
                 $localPath . '/' . $file
             );
         }
 
         return true;
     }
-    public function files($value='')
+    public function files($what='')
     {
         $localPath = Config::get('db-exporter.export_path.'.$what);
 
@@ -48,6 +48,6 @@ class Server
     private function getDiskName()
     {
         // For now static from he config file.
-        return Config::get('db-exporter.remote.disk');
+        return Config::get('db-exporter.backup.disk');
     }
 }
