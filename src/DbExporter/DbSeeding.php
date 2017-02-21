@@ -52,7 +52,7 @@ class DbSeeding extends DbExporter
         $absolutePath = Config::get('db-exporter.export_path.seeds');
         $this->filename = ucfirst(Str::camel($this->database)) . "DatabaseSeeder";
         $this->makePath($absolutePath);
-        file_put_contents($absolutePath . "/{$filename}.php", $seed);
+        file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
     }
 
     /**
