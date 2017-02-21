@@ -94,6 +94,24 @@ abstract class DbExporter
     {
         return DB::table($this->database . '.' . $table)->get();
     }
+    /**
+     * Try to create directories if they dont exist
+     *
+     * @return void
+     * @param string $path 
+     **/
+    protected function makePath($path)
+    {
+        $del = DIRECTORY_SEPARATOR;
+        $dir = $del;
+        $directories = explode($del, $path);
+        foreach ($directories as $key => $directory) {
+            $dir.=$directory;
+            if(!is_dir($dir)){
+                @mkdir($dir);
+            }
+        }
+    }
 
     /**
      * Write the file

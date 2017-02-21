@@ -40,6 +40,8 @@ Add the service provider to `config/app.php`:
 php artisan vendor:publish --provider="Elimuswift\DbExporter\DbExporterServiceProvider"
 ```
 
+After publishing the config file make sure you change storage location for migrations and seeds.
+
 *Use `dev-master` as version requirement to be on the cutting edge*
 
 

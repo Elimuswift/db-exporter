@@ -32,7 +32,7 @@ class Server
             // Copy the files
             Storage::disk($this->getDiskName())->put(
                 $remotePath .'/'.$file,
-                $localPath . '/' . $file
+                file_get_contents($localPath . '/' . $file)
             );
         }
 

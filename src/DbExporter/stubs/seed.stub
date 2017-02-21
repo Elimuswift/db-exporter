@@ -5,6 +5,8 @@ use Illuminate\Database\Seeder;
 class {{className}} extends Seeder {
     public function run()
     {
-        {{run}}
+    	 DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+         {{run}}
     }
 }

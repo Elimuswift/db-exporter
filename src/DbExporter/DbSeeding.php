@@ -16,6 +16,11 @@ class DbSeeding extends DbExporter
     /**
      * @var String
      */
+    public $filename;
+
+    /**
+     * @var String
+     */
     protected $seedingStub;
 
     /**
@@ -44,10 +49,10 @@ class DbSeeding extends DbExporter
         }
 
         $seed = $this->compile();
-
-        $filename = ucfirst(Str::camel($this->database)) . "TableSeeder";
-
-        file_put_contents(Config::get('db-exporter.export_path.seeds') . "/{$filename}.php", $seed);
+        $absolutePath = Config::get('db-exporter.export_path.seeds');
+        $this->filename = ucfirst(Str::camel($this->database)) . "DatabaseSeeder";
+        $this->makePath($absolutePath);
+        file_put_contents($absolutePath . "/{$filename}.php", $seed);
     }
 
     /**
@@ -123,13 +128,7 @@ class DbSeeding extends DbExporter
     {
         $prop = addslashes($prop);
         $value = addslashes($value);
-        if (is_numeric($value)) {
-            return "                '{$prop}' => {$value},\n";
-        } elseif ($value == '') {
-            return "                '{$prop}' => NULL,\n";
-        } else {
-            return "                '{$prop}' => '{$value}',\n";
-        }
+        return "                '{$prop}' => '{$value}',\n";
     }
 
     /**

@@ -9,6 +9,14 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class GeneratorCommand extends Command
 {
+
+    /**
+     * Current database being exported or migrated
+     *
+     * @var string
+     **/
+    protected $database;
+
     /**
      * Get the database name from the app/config/database.php file
      * @return String
@@ -58,13 +66,14 @@ class GeneratorCommand extends Command
         // Grab the options
         $ignore = $this->option('ignore');
 
+        $this->database = $database;
         if (empty($ignore)) {
             $this->handler->$action($database);
         } else {
             $tables = explode(',', str_replace(' ', '', $ignore));
-
-            $this->handler->ignore($tables)->$action($database);
-            foreach (DbExporter::$ignore as $table) {
+            DbExporter::$ignore = array_merge(DbExporter::$ignore, $tables);
+            $this->handler->$action($database);
+            foreach ($tables as $table) {
                 $this->comment("Ignoring the {$table} table");
             }
         }
