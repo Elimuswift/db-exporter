@@ -103,14 +103,14 @@ abstract class DbExporter
     protected function makePath($path)
     {
         $del = DIRECTORY_SEPARATOR;
-        $dir = $del;
+        $dir ='';
         $directories = explode($del, $path);
-        foreach ($directories as $key => $directory) {
-            $dir.=$directory;
-            if(!is_dir($dir)){
+         foreach ($directories as $key => $directory) { 
+            if(!empty($directory))
+                $dir.= $del.$directory;
+            if(!is_dir($dir))                                                                 
                 @mkdir($dir);
-            }
-        }
+            }   
     }
 
     /**
