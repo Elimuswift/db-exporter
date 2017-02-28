@@ -118,7 +118,7 @@ class DbSeeding extends DbExporter
         $template = File::get(__DIR__ . '/stubs/seed.stub');
 
         // Replace the classname
-        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . "TableSeeder", $template);
+        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . "DatabaseSeeder", $template);
         $template = str_replace('{{run}}', $this->seedingStub, $template);
 
         return $template;
