@@ -9,6 +9,32 @@ use Elimuswift\DbExporter\Exceptions\InvalidDatabaseException;
 
 class DbMigrations extends DbExporter
 {
+
+    /**
+     * Column data types
+     *
+     * @var string
+     **/
+    protected $columns = [
+            'int'       => 'integer',
+            'smallint'  => 'smallInteger',
+            'bigint'    => 'bigInteger',
+            'char '     => 'string',
+            'varchar'   => 'string',
+            'float'     => 'float',
+            'double'    => 'double',
+            'decimal'   => 'decimal',
+            'tinyint'   => 'boolean',
+            'date'      => 'date',
+            'timestamp' => 'timestamp',
+            'datetime'  => 'dateTime',
+            'longtext'  => 'longText',
+            'mediumtext'=> 'mediumText',
+            'text'      => 'text',
+            'longblob'  => 'binary' ,
+            'blob'      => 'binary',
+            'enum'      => 'enum'
+        ];
    
 
     protected $schema;
@@ -144,11 +170,7 @@ class DbMigrations extends DbExporter
 
     public function columnType($type)
     {
-       $columns = ['int'=> 'integer','smallint' => 'smallInteger','bigint' => 'bigInteger','char '=>'string', 'varchar' => 'string','float' => 'float','double' => 'double','decimal' => 'decimal','tinyint' => 'boolean','date' => 'date','timestamp' => 'timestamp','datetime' => 'dateTime','longtext' => 'longText','mediumtext' => 'mediumText','text' => 'text','longblob' => 'binary' ,'blob' => 'binary','enum' => 'enum'];
-       return array_key_exists($type, $columns) ? $columns[$type] : '';
-                        
-               
-
+       return array_key_exists($type, $columns) ? $this->columns[$type] : '';
     }
     /**
      * Compile the migration into the base migration file

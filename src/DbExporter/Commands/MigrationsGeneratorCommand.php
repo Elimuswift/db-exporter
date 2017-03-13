@@ -31,6 +31,7 @@ class MigrationsGeneratorCommand extends GeneratorCommand
         // Display some helpfull info
         if (empty($database)) {
             $this->comment("Preparing the migrations for database: {$this->getDatabaseName()}");
+            $database = $this->getDatabaseName();
         } else {
             $this->comment("Preparing the migrations for database {$database}");
         }
