@@ -15,24 +15,24 @@ class DbMigrations extends DbExporter
      * @var string
      **/
     protected $columns = [
-                          'int' => 'integer',
-                          'smallint' => 'smallInteger',
-                          'bigint' => 'bigInteger',
-                          'char ' => 'string',
-                          'varchar' => 'string',
-                          'float' => 'float',
-                          'double' => 'double',
-                          'decimal' => 'decimal',
-                          'tinyint' => 'boolean',
-                          'date' => 'date',
-                          'timestamp' => 'timestamp',
-                          'datetime' => 'dateTime',
-                          'longtext' => 'longText',
+                          'int'        => 'integer',
+                          'smallint'   => 'smallInteger',
+                          'bigint'     => 'bigInteger',
+                          'char '      => 'string',
+                          'varchar'    => 'string',
+                          'float'      => 'float',
+                          'double'     => 'double',
+                          'decimal'    => 'decimal',
+                          'tinyint'    => 'boolean',
+                          'date'       => 'date',
+                          'timestamp'  => 'timestamp',
+                          'datetime'   => 'dateTime',
+                          'longtext'   => 'longText',
                           'mediumtext' => 'mediumText',
-                          'text' => 'text',
-                          'longblob' => 'binary',
-                          'blob' => 'binary',
-                          'enum' => 'enum',
+                          'text'       => 'text',
+                          'longblob'   => 'binary',
+                          'blob'       => 'binary',
+                          'enum'       => 'enum',
                          ];
 
     protected $schema;
@@ -47,6 +47,7 @@ class DbMigrations extends DbExporter
      */
     public $filename;
 
+
     /**
      * Set the database name.
      *
@@ -60,9 +61,9 @@ class DbMigrations extends DbExporter
         }
 
         $this->database = $database;
-    }
 
-//end __construct()
+    }//end __construct()
+
 
     /**
      * Write the prepared migration to a file.
@@ -75,17 +76,17 @@ class DbMigrations extends DbExporter
             $this->convert();
         }
 
-        $schema = $this->compile();
+        $schema       = $this->compile();
         $absolutePath = Config::get('db-exporter.export_path.migrations');
         $this->makePath($absolutePath);
-        $this->filename = date('Y_m_d_His').'_create_'.$this->database.'_database.php';
+        $this->filename   = date('Y_m_d_His').'_create_'.$this->database.'_database.php';
         static::$filePath = $absolutePath."/{$this->filename}";
         file_put_contents(static::$filePath, $schema);
 
         return static::$filePath;
-    }
 
-//end write()
+    }//end write()
+
 
     /**
      * Convert the database to migrations
@@ -112,22 +113,22 @@ class DbMigrations extends DbExporter
             }
 
             $down = "Schema::drop('{$value['table_name']}');";
-            $up = "Schema::create('{$value['table_name']}', function(Blueprint $"."table) {\n";
+            $up   = "Schema::create('{$value['table_name']}', function(Blueprint $"."table) {\n";
 
             $tableDescribes = $this->getTableDescribes($value['table_name']);
             // Loop over the tables fields
             foreach ($tableDescribes as $values) {
-                $para = strpos($values->Type, '(');
-                $type = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
-                $numbers = '';
+                $para     = strpos($values->Type, '(');
+                $type     = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
+                $numbers  = '';
                 $nullable = $values->null == 'NO' ? '' : '->nullable()';
-                $default = empty($values->Default) ? '' : "->default(\"{$values->Default}\")";
-                $default = $values->Default == 'CURRENT_TIMESTAMP' ? '->useCurrent()' : $default;
+                $default  = empty($values->Default) ? '' : "->default(\"{$values->Default}\")";
+                $default  = $values->Default == 'CURRENT_TIMESTAMP' ? '->useCurrent()' : $default;
                 $unsigned = strpos($values->Type, 'unsigned') === false ? '' : '->unsigned()';
 
                 if (in_array($type, ['var', 'varchar', 'enum', 'decimal', 'float'])) {
-                    $para = strpos($values->Type, '(');
-                    $opt = substr($values->Type, ($para + 1), -1);
+                    $para    = strpos($values->Type, '(');
+                    $opt     = substr($values->Type, ($para + 1), -1);
                     $numbers = $type == 'enum' ? ', array('.$opt.')' : ',  '.$opt;
                 }
 
@@ -148,7 +149,7 @@ class DbMigrations extends DbExporter
                 }
             }
 
-            $up .= "            });\n\n";
+            $up        .= "            });\n\n";
             $Constraint = $ConstraintDown = '';
             /*
                 * @var array
@@ -157,38 +158,38 @@ class DbMigrations extends DbExporter
             if (!is_null($tableConstraints) && count($tableConstraints)) {
                 $Constraint = $ConstraintDown = "
             Schema::table('{$value['table_name']}', function(Blueprint $"."table) {\n";
-                $tables = [];
+                $tables     = [];
                 foreach ($tableConstraints as $foreign) {
                     if (!in_array($foreign->Field, $tables)) {
                         $ConstraintDown .= '                $'."table->dropForeign('".$foreign->Field."');\n";
-                        $Constraint .= '                $'."table->foreign('".$foreign->Field."')->references('".$foreign->References."')->on('".$foreign->ON."')->onDelete('".$foreign->onDelete."');\n";
+                        $Constraint     .= '                $'."table->foreign('".$foreign->Field."')->references('".$foreign->References."')->on('".$foreign->ON."')->onDelete('".$foreign->onDelete."');\n";
                         $tables[$foreign->Field] = $foreign->Field;
                     }
                 }
 
-                $Constraint .= "            });\n\n";
+                $Constraint     .= "            });\n\n";
                 $ConstraintDown .= "            });\n\n";
             }
 
             $this->schema[$value['table_name']] = array(
-                                                   'up' => $up,
-                                                   'constraint' => $Constraint,
+                                                   'up'              => $up,
+                                                   'constraint'      => $Constraint,
                                                    'constraint_down' => $ConstraintDown,
-                                                   'down' => $down,
+                                                   'down'            => $down,
                                                   );
         }//end foreach
 
         return $this;
-    }
 
-//end convert()
+    }//end convert()
+
 
     public function columnType($type)
     {
         return array_key_exists($type, $this->columns) ? $this->columns[$type] : '';
-    }
 
-//end columnType()
+    }//end columnType()
+
 
     /**
      * Compile the migration into the base migration file
@@ -198,9 +199,9 @@ class DbMigrations extends DbExporter
      */
     protected function compile()
     {
-        $upSchema = '';
-        $downSchema = '';
-        $upConstraint = '';
+        $upSchema       = '';
+        $downSchema     = '';
+        $upConstraint   = '';
         $downConstraint = '';
 
         // prevent of failure when no table
@@ -211,13 +212,13 @@ class DbMigrations extends DbExporter
                     continue;
                 }
 
-                $upSchema .= "
+                $upSchema       .= "
 	    /**
 	     * Migration schema for table {$name}
          * 
 	     */
 	    {$values['up']}";
-                $upConstraint .= "
+                $upConstraint   .= "
                 {$values['constraint']}";
                 $downConstraint .= "
                 {$values['constraint_down']}";
@@ -240,7 +241,8 @@ class DbMigrations extends DbExporter
         $template = str_replace('{{downCon}}', $downConstraint, $template);
 
         return $template;
-    }
 
-//end compile()
+    }//end compile()
+
+
 }//end class

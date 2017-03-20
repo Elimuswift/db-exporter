@@ -29,7 +29,7 @@ abstract class DbExporter
     protected $selects = array(
                           'column_name as Field',
                           'column_type as Type',
-                          'is_nullable as Null',
+                          'is_nullable as null',
                           'column_key as Key',
                           'column_default as Default',
                           'extra as Extra',
