@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Elimuswift\DbExporter;
 
 class DbExportHandler
@@ -14,9 +15,10 @@ class DbExportHandler
     protected $seeder;
 
     /**
-     * Inject the DbMigrations class
+     * Inject the DbMigrations class.
+     *
      * @param DbMigrations $DbMigrations
-     * @param DbSeeding $DbSeeding
+     * @param DbSeeding    $DbSeeding
      */
     public function __construct(DbMigrations $DbMigrations, DbSeeding $DbSeeding)
     {
@@ -24,9 +26,13 @@ class DbExportHandler
         $this->seeder = $DbSeeding;
     }
 
+//end __construct()
+
     /**
-     * Create migrations from the given DB
-     * @param String null $database
+     * Create migrations from the given DB.
+     *
+     * @param string null $database
+     *
      * @return $this
      */
     public function migrate($database = null)
@@ -36,8 +42,11 @@ class DbExportHandler
         return $this;
     }
 
+//end migrate()
+
     /**
      * @param null $database
+     *
      * @return $this
      */
     public function seed($database = null)
@@ -47,9 +56,13 @@ class DbExportHandler
         return $this;
     }
 
+//end seed()
+
     /**
-     * Helper function to generate the migration and the seed in one command
+     * Helper function to generate the migration and the seed in one command.
+     *
      * @param null $database
+     *
      * @return $this
      */
     public function migrateAndSeed($database = null)
@@ -63,17 +76,23 @@ class DbExportHandler
         return $this;
     }
 
+//end migrateAndSeed()
+
     /**
-     * Add tables to the ignore array
+     * Add tables to the ignore array.
+     *
      * @param $tables
+     *
      * @return $this
      */
     public function ignore(...$tables)
     {
-        DbExporter::$ignore = array_merge(DbExporter::$ignore, (array)$tables);
+        DbExporter::$ignore = array_merge(DbExporter::$ignore, (array) $tables);
 
         return $this;
     }
+
+//end ignore()
 
     /**
      * @return mixed
@@ -83,6 +102,8 @@ class DbExportHandler
         return DbMigrations::$filePath;
     }
 
+//end getMigrationsFilePath()
+
     public function uploadTo($remote)
     {
         DbExporter::$remote = $remote;
@@ -90,4 +111,5 @@ class DbExportHandler
         return $this;
     }
 
-}
+//end uploadTo()
+}//end class

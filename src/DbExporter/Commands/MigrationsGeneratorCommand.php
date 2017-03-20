@@ -1,11 +1,8 @@
-<?php 
+<?php
+
 namespace Elimuswift\DbExporter\Commands;
 
-use Config;
-use Elimuswift\DbExporter\DbExporter;
 use Elimuswift\DbExporter\DbExportHandler;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
 
 class MigrationsGeneratorCommand extends GeneratorCommand
 {
@@ -24,6 +21,8 @@ class MigrationsGeneratorCommand extends GeneratorCommand
         $this->handler = $handler;
     }
 
+//end __construct()
+
     public function fire()
     {
         $database = $this->argument('database');
@@ -39,8 +38,8 @@ class MigrationsGeneratorCommand extends GeneratorCommand
         $this->fireAction('migrate', $database);
 
         // Symfony style block messages
-        $this->blockMessage('Success!', 'Database migrations generated in: ' . $this->handler->getMigrationsFilePath());
+        $this->blockMessage('Success!', 'Database migrations generated in: '.$this->handler->getMigrationsFilePath());
     }
 
-    
-}
+//end fire()
+}//end class

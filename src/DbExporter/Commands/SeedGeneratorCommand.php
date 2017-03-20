@@ -1,8 +1,8 @@
-<?php 
+<?php
+
 namespace Elimuswift\DbExporter\Commands;
 
 use Elimuswift\DbExporter\DbExportHandler;
-use Symfony\Component\Console\Input\InputOption;
 use Config;
 use Illuminate\Support\Str;
 
@@ -24,6 +24,8 @@ class SeedGeneratorCommand extends GeneratorCommand
         $this->handler = $handler;
     }
 
+//end __construct()
+
     public function fire()
     {
         $database = $this->argument('database');
@@ -42,17 +44,23 @@ class SeedGeneratorCommand extends GeneratorCommand
         $formatter = $this->getHelperSet()->get('formatter');
         $filename = $this->getFilename();
 
-        $errorMessages = array('Success!', "Database seed class generated in: {$filename}");
+        $errorMessages = array(
+                          'Success!',
+                          "Database seed class generated in: {$filename}",
+                         );
 
         $formattedBlock = $formatter->formatBlock($errorMessages, 'info', true);
         $this->line($formattedBlock);
     }
 
+//end fire()
+
     private function getFilename()
     {
-        $filename = ucfirst(Str::camel($this->database)) . "DatabaseSeeder";
-        return Config::get('db-exporter.export_path.seeds') . "/{$filename}.php";
+        $filename = ucfirst(Str::camel($this->database)).'DatabaseSeeder';
+
+        return Config::get('db-exporter.export_path.seeds')."/{$filename}.php";
     }
 
-    
-}
+//end getFilename()
+}//end class
