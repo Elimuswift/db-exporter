@@ -126,7 +126,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         $this->app->singleton(
             'db-exporter.backup',
             function () {
-                return new Commands\CopyToRemoteCommand(new Server());
+                return new Commands\CopyToRemoteCommand();
             }
         );
     }
