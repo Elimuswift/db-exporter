@@ -70,9 +70,9 @@ abstract class DbExporter
     /**
      * Get all the columns for a given table.
      *
-     * @param  $table
+     * @param $table
      *
-     * @return mixed
+     * @return array
      */
     protected function getTableDescribes($table)
     {
@@ -87,9 +87,9 @@ abstract class DbExporter
     /**
      * Get all the foreign key constraints for a given table.
      *
-     * @param  $table
+     * @param $table
      *
-     * @return mixed
+     * @return array
      */
     protected function getTableConstraints($table)
     {
@@ -106,7 +106,7 @@ abstract class DbExporter
     /**
      * Grab all the table data.
      *
-     * @param  $table
+     * @param $table
      *
      * @return mixed
      */
@@ -127,10 +127,11 @@ abstract class DbExporter
         $del = DIRECTORY_SEPARATOR;
         $dir = '';
         $directories = explode($del, $path);
-        foreach ($directories as $key => $directory) {
+        foreach ($directories as $directory) {
             if (!empty($directory)) {
                 $dir .= $del.$directory;
             }
+
             if (!is_dir($dir)) {
                 @mkdir($dir);
             }

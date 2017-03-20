@@ -29,7 +29,6 @@ class SeedGeneratorCommand extends GeneratorCommand
     public function fire()
     {
         $database = $this->argument('database');
-
         // Display some helpfull info
         if (empty($database)) {
             $this->comment("Preparing the seeder class for database {$this->getDatabaseName()}");
@@ -37,18 +36,15 @@ class SeedGeneratorCommand extends GeneratorCommand
             $this->comment("Preparing the seeder class for database {$database}");
         }
 
-        // Grab the options
-        $this->fireAction('seed', $database);
-
-        // Symfony style block messages
-        $formatter = $this->getHelperSet()->get('formatter');
+            // Grab the options
+            $this->fireAction('seed', $database);
+            // Symfony style block messages
+            $formatter = $this->getHelperSet()->get('formatter');
         $filename = $this->getFilename();
-
-        $errorMessages = array(
-                          'Success!',
-                          "Database seed class generated in: {$filename}",
-                         );
-
+        $errorMessages = [
+                               'Success!',
+                               "Database seed class generated in: {$filename}",
+                              ];
         $formattedBlock = $formatter->formatBlock($errorMessages, 'info', true);
         $this->line($formattedBlock);
     }
