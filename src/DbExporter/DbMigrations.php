@@ -151,8 +151,8 @@ class DbMigrations extends DbExporter
 
             $up        .= "            });\n\n";
             $Constraint = $ConstraintDown = '';
-            /*
-                * @var array
+            /**
+             * @var array
              */
             $tableConstraints = $this->getTableConstraints($value['table_name']);
             if (!is_null($tableConstraints) && count($tableConstraints)) {
