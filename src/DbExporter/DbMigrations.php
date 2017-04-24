@@ -88,8 +88,8 @@ class DbMigrations extends DbExporter
         $schema = $this->compile();
         $absolutePath = Config::get('db-exporter.export_path.migrations');
         $this->makePath($absolutePath);
-        $this->filename = date('Y_m_d_His').'_create_'.$this->database.'_database.php';
-        static::$filePath = $absolutePath."/{$this->filename}";
+        $this->filename = date('Y_m_d_His') . '_create_' . $this->database . '_database.php';
+        static::$filePath = $absolutePath . "/{$this->filename}";
         file_put_contents(static::$filePath, $schema);
 
         return static::$filePath;
@@ -122,7 +122,7 @@ class DbMigrations extends DbExporter
             }
 
             $down = "Schema::drop('{$value['table_name']}');";
-            $up = "Schema::create('{$value['table_name']}', function(Blueprint $"."table) {\n";
+            $up = "Schema::create('{$value['table_name']}', function(Blueprint $" . "table) {\n";
 
             $tableDescribes = $this->getTableDescribes($value['table_name']);
             // Loop over the tables fields
@@ -139,17 +139,17 @@ class DbMigrations extends DbExporter
                 if (in_array($type, ['var', 'varchar', 'double', 'enum', 'decimal', 'float'])) {
                     $para = strpos($values->Type, '(');
                     $opt = substr($values->Type, ($para + 1), -1);
-                    $numbers = $type == 'enum' ? ', array('.$opt.')' : ',  '.$opt;
+                    $numbers = $type == 'enum' ? ', array(' . $opt . ')' : ',  ' . $opt;
                 }
 
                 $method = $this->columnType($type);
                 if ($values->Key == 'PRI') {
                     $tmp = $this->columnType($values->Data_Type, 'primaryKeys');
                     $method = empty($tmp) ? $method : $tmp;
-                    $pri .= empty($tmp) ? '                $'."table->primary('".$values->Field."');\n" : '';
+                    $pri .= empty($tmp) ? '                $' . "table->primary('" . $values->Field . "');\n" : '';
                 }
 
-                $up .= '                $'."table->{$method}('{$values->Field}'{$numbers}){$nullable}{$default}{$unsigned};\n";
+                $up .= '                $' . "table->{$method}('{$values->Field}'{$numbers}){$nullable}{$default}{$unsigned};\n";
                 $up .= $pri;
             }//end foreach
 
@@ -157,7 +157,7 @@ class DbMigrations extends DbExporter
             if (!is_null($tableIndexes) && count($tableIndexes)) {
                 foreach ($tableIndexes as $index) {
                     if (Str::endsWith($index['Key_name'], '_index')) {
-                        $up .= '                $'."table->index('".$index['Column_name']."');\n";
+                        $up .= '                $' . "table->index('" . $index['Column_name'] . "');\n";
                     }
                 }
             }
@@ -170,12 +170,12 @@ class DbMigrations extends DbExporter
             $tableConstraints = $this->getTableConstraints($value['table_name']);
             if (!is_null($tableConstraints) && count($tableConstraints)) {
                 $Constraint = $ConstraintDown = "
-            Schema::table('{$value['table_name']}', function(Blueprint $"."table) {\n";
+            Schema::table('{$value['table_name']}', function(Blueprint $" . "table) {\n";
                 $tables = [];
                 foreach ($tableConstraints as $foreign) {
                     if (!in_array($foreign->Field, $tables)) {
-                        $ConstraintDown .= '                $'."table->dropForeign('".$foreign->Field."');\n";
-                        $Constraint .= '                $'."table->foreign('".$foreign->Field."')->references('".$foreign->References."')->on('".$foreign->ON."')->onDelete('".$foreign->onDelete."');\n";
+                        $ConstraintDown .= '                $' . "table->dropForeign('" . $foreign->Field . "');\n";
+                        $Constraint .= '                $' . "table->foreign('" . $foreign->Field . "')->references('" . $foreign->References . "')->on('" . $foreign->ON . "')->onDelete('" . $foreign->onDelete . "');\n";
                         $tables[$foreign->Field] = $foreign->Field;
                     }
                 }
@@ -184,12 +184,12 @@ class DbMigrations extends DbExporter
                 $ConstraintDown .= "            });\n\n";
             }
 
-            $this->schema[$value['table_name']] = array(
+            $this->schema[$value['table_name']] = [
                                                    'up' => $up,
                                                    'constraint' => $Constraint,
                                                    'constraint_down' => $ConstraintDown,
                                                    'down' => $down,
-                                                  );
+                                                  ];
         }//end foreach
 
         return $this;
@@ -242,10 +242,10 @@ class DbMigrations extends DbExporter
         }//end if
 
         // Grab the template
-        $template = File::get(__DIR__.'/stubs/migration.stub');
+        $template = File::get(__DIR__ . '/stubs/migration.stub');
 
         // Replace the classname
-        $template = str_replace('{{name}}', 'Create'.ucfirst(Str::camel($this->database)).'Database', $template);
+        $template = str_replace('{{name}}', 'Create' . ucfirst(Str::camel($this->database)) . 'Database', $template);
 
         // Replace the up and down values
         $template = str_replace('{{up}}', $upSchema, $template);

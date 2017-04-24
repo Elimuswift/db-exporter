@@ -11,7 +11,7 @@ abstract class DbExporter
      *
      * @var array
      */
-    public static $ignore = array('migrations');
+    public static $ignore = ['migrations'];
     public static $remote;
 
     /**
@@ -26,7 +26,7 @@ abstract class DbExporter
      *
      * @var array
      **/
-    protected $selects = array(
+    protected $selects = [
                           'column_name as Field',
                           'column_type as Type',
                           'is_nullable as null',
@@ -34,26 +34,26 @@ abstract class DbExporter
                           'column_default as Default',
                           'extra as Extra',
                           'data_type as Data_Type',
-                         );
+                         ];
     /**
      * Select fields from  constraints.
      *
      * @var array
      **/
-    protected $constraints = array(
+    protected $constraints = [
                               'key_column_usage.table_name as Table',
                               'key_column_usage.column_name as Field',
                               'key_column_usage.referenced_table_name as ON',
                               'key_column_usage.referenced_column_name as References',
                               'REFERENTIAL_CONSTRAINTS.UPDATE_RULE as onUpdate',
                               'REFERENTIAL_CONSTRAINTS.DELETE_RULE as onDelete',
-                             );
+                             ];
 
     protected function getTables()
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="'.$this->database.'"');
+        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="' . $this->database . '"');
     }
 
 //end getTables()
@@ -62,7 +62,7 @@ abstract class DbExporter
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SHOW INDEX FROM '.$this->database.'.'.$table.' WHERE Key_name != "PRIMARY"');
+        return $pdo->query('SHOW INDEX FROM ' . $this->database . '.' . $table . ' WHERE Key_name != "PRIMARY"');
     }
 
 //end getTableIndexes()
@@ -112,7 +112,7 @@ abstract class DbExporter
      */
     protected function getTableData($table)
     {
-        return DB::table($this->database.'.'.$table)->get();
+        return DB::table($this->database . '.' . $table)->get();
     }
 
 //end getTableData()
@@ -129,7 +129,7 @@ abstract class DbExporter
         $directories = explode($del, $path);
         foreach ($directories as $directory) {
             if (!empty($directory)) {
-                $dir .= $del.$directory;
+                $dir .= $del . $directory;
             }
 
             if (!is_dir($dir)) {

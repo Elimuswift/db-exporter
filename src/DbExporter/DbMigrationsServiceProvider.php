@@ -35,7 +35,7 @@ class DbMigrationsServiceProvider extends ServiceProvider
             DbMigrations::class,
             function () {
                 $connType = Config::get('database.default');
-                $database = Config::get('database.connections.'.$connType);
+                $database = Config::get('database.connections.' . $connType);
 
                 return new DbMigrations($database['database']);
             }
@@ -51,7 +51,7 @@ class DbMigrationsServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('DbMigrations');
+        return ['DbMigrations'];
     }
 
 //end provides()

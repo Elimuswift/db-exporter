@@ -1,14 +1,18 @@
-<?php 
+<?php
+
 namespace Elimuswift\DbExporter\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class DbMigrations extends Facade {
+class DbMigrations extends Facade
+{
     /**
      * Get the registered name of the component.
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'DbMigrations'; }
-
+    protected static function getFacadeAccessor()
+    {
+        return 'DbMigrations';
+    }
 }

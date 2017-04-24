@@ -54,9 +54,9 @@ class DbSeeding extends DbExporter
 
         $seed = $this->compile();
         $absolutePath = Config::get('db-exporter.export_path.seeds');
-        $this->filename = ucfirst(Str::camel($this->database)).'DatabaseSeeder';
+        $this->filename = ucfirst(Str::camel($this->database)) . 'DatabaseSeeder';
         $this->makePath($absolutePath);
-        file_put_contents($absolutePath."/{$this->filename}.php", $seed);
+        file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
     }
 
 //end write()
@@ -106,7 +106,7 @@ class DbSeeding extends DbExporter
 
             if ($this->hasTableData($tableData)) {
                 $stub .= "
-        DB::table('".$tableName."')->insert([
+        DB::table('" . $tableName . "')->insert([
             {$insertStub}
         ]);";
             }
@@ -127,10 +127,10 @@ class DbSeeding extends DbExporter
     protected function compile()
     {
         // Grab the template
-        $template = File::get(__DIR__.'/stubs/seed.stub');
+        $template = File::get(__DIR__ . '/stubs/seed.stub');
 
         // Replace the classname
-        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)).'DatabaseSeeder', $template);
+        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . 'DatabaseSeeder', $template);
         $template = str_replace('{{run}}', $this->seedingStub, $template);
 
         return $template;

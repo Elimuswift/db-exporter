@@ -53,9 +53,9 @@ class SeedGeneratorCommand extends GeneratorCommand
 
     private function getFilename()
     {
-        $filename = ucfirst(Str::camel($this->database)).'DatabaseSeeder';
+        $filename = ucfirst(Str::camel($this->database)) . 'DatabaseSeeder';
 
-        return Config::get('db-exporter.export_path.seeds')."/{$filename}.php";
+        return Config::get('db-exporter.export_path.seeds') . "/{$filename}.php";
     }
 
 //end getFilename()

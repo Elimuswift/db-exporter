@@ -25,7 +25,7 @@ class GeneratorCommand extends Command
     protected function getDatabaseName()
     {
         $connType = Config::get('database.default');
-        $database = Config::get('database.connections.'.$connType);
+        $database = Config::get('database.connections.' . $connType);
 
         return $database['database'];
     }
@@ -36,10 +36,10 @@ class GeneratorCommand extends Command
     {
         // Symfony style block messages
         $formatter = $this->getHelperSet()->get('formatter');
-        $errorMessages = array(
+        $errorMessages = [
                            $title,
                            $message,
-                          );
+                          ];
         $formattedBlock = $formatter->formatBlock($errorMessages, $style, true);
         $this->line($formattedBlock);
     }
@@ -60,28 +60,28 @@ class GeneratorCommand extends Command
 
     protected function getArguments()
     {
-        return array(
-                array(
+        return [
+                [
                  'database',
                  InputArgument::OPTIONAL,
                  'Override the application database',
-                ),
-               );
+                ],
+               ];
     }
 
 //end getArguments()
 
     protected function getOptions()
     {
-        return array(
-                array(
+        return [
+                [
                  'ignore',
                  'i',
                  InputOption::VALUE_REQUIRED,
                  'Ignore tables to export, seperated by a comma',
                  null,
-                ),
-               );
+                ],
+               ];
     }
 
 //end getOptions()

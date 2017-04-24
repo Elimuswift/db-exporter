@@ -38,7 +38,7 @@ class CopyToRemoteCommand extends GeneratorCommand
                 $this->line("\n");
                 $this->info(ucfirst($type));
                 foreach ($files as $file) {
-                    $this->sectionMessage($type, $file.' uploaded.');
+                    $this->sectionMessage($type, $file . ' uploaded.');
                 }
             }
 
@@ -109,9 +109,9 @@ class CopyToRemoteCommand extends GeneratorCommand
 
     private function upload($what)
     {
-        $localPath = Config::get('db-exporter.export_path.'.$what);
+        $localPath = Config::get('db-exporter.export_path.' . $what);
         $dir = scandir($localPath);
-        $remotePath = Config::get('db-exporter.remote.'.$what);
+        $remotePath = Config::get('db-exporter.remote.' . $what);
         $this->line("\n");
         $this->info(ucfirst($what));
         // Prepare the progress bar
@@ -123,12 +123,12 @@ class CopyToRemoteCommand extends GeneratorCommand
             }
 
             // Capture the uploaded files for displaying later
-            $this->uploadedFiles[$what][] = $remotePath.$file;
+            $this->uploadedFiles[$what][] = $remotePath . $file;
 
             // Copy the files
             Storage::disk($this->getDiskName())->put(
-                $remotePath.$file,
-                $localPath.'/'.$file
+                $remotePath . $file,
+                $localPath . '/' . $file
             );
             $progress->advance();
         }
