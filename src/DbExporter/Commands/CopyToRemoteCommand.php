@@ -38,7 +38,7 @@ class CopyToRemoteCommand extends GeneratorCommand
                 $this->line("\n");
                 $this->info(ucfirst($type));
                 foreach ($files as $file) {
-                    $this->sectionMessage($type, $file . ' uploaded.');
+                    $this->sectionMessage($type, $file.' uploaded.');
                 }
             }
 
@@ -70,48 +70,30 @@ class CopyToRemoteCommand extends GeneratorCommand
 
 //end getOptions()
 
-    private function getRemoteName()
-    {
-        // Use default production key
-        if (!$this->argument('remote')) {
-            return 'production';
-        } else {
-            return $this->argument('remote');
-        }
-    }
-
-//end getRemoteName()
-
-    private function handleOptions()
+    protected function handleOptions()
     {
         $options = $this->option();
         switch ($options) {
-        case ($options['seeds'] === true) && ($options['migrations'] === true):
-            if (!$this->upload('migrations')) {
-                return false;
-            }
+            case $options['migrations'] === true:
+                $this->commandOptions = 'migrations';
 
-            return $this->upload('seeds');
+                return $this->upload('migrations');
+            break;
+            case $options['seeds'] === true:
+                $this->commandOptions = 'seeds';
 
-        case $options['migrations'] === true:
-            $this->commandOptions = 'migrations';
-
-            return $this->upload('migrations');
-
-        case $options['seeds'] === true:
-            $this->commandOptions = 'seeds';
-
-            return $this->upload('seeds');
+                return $this->upload('seeds');
+            break;
         }
     }
 
 //end handleOptions()
 
-    private function upload($what)
+    protected function upload($what)
     {
-        $localPath = Config::get('db-exporter.export_path.' . $what);
+        $localPath = Config::get('db-exporter.export_path.'.$what);
         $dir = scandir($localPath);
-        $remotePath = Config::get('db-exporter.remote.' . $what);
+        $remotePath = Config::get('db-exporter.remote.'.$what);
         $this->line("\n");
         $this->info(ucfirst($what));
         // Prepare the progress bar
@@ -123,12 +105,12 @@ class CopyToRemoteCommand extends GeneratorCommand
             }
 
             // Capture the uploaded files for displaying later
-            $this->uploadedFiles[$what][] = $remotePath . $file;
+            $this->uploadedFiles[$what][] = $remotePath.$file;
 
             // Copy the files
             Storage::disk($this->getDiskName())->put(
-                $remotePath . $file,
-                $localPath . '/' . $file
+                $remotePath.$file,
+                $localPath.'/'.$file
             );
             $progress->advance();
         }
@@ -140,7 +122,7 @@ class CopyToRemoteCommand extends GeneratorCommand
 
 //end upload()
 
-    private function getDiskName()
+    protected function getDiskName()
     {
         // For now static from he config file.
         return Config::get('db-exporter.remote.disk');
