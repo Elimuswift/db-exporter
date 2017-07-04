@@ -31,13 +31,13 @@ $ php composer.phar update
 Add the service provider to `config/app.php`:
 
 ```php
- Elimuswift\DbExporter\DbExporterServiceProvider::class
+ Elimuswift\DbExporter\DbExportHandlerServiceProvider::class
 ```
 
 (Optional) Publish the configuration file.
 
 ```
-php artisan vendor:publish --provider="Elimuswift\DbExporter\DbExporterServiceProvider"
+php artisan vendor:publish --provider="Elimuswift\DbExporter\DbExportHandlerServiceProvider"
 ```
 
 After publishing the config file make sure you change storage location for migrations and seeds.
@@ -86,7 +86,7 @@ php artisan db-exporter:seeds
 **Important: The package backup destinations paths should match your desired disk location
 
 
-You can backup migrations and / or seeds to a storage any disk that you application supports.
+You can backup migrations and / or seeds to a storage disk that you application supports.
 
 
 ```
@@ -103,7 +103,9 @@ Or even combine the two:
 php artisan db-exporter:backup --migrations --seeds
 ```
 
-***
+*** This feature uses Laravel's filesystem. 
+
+You must configure your storage and then specify the disk name in the config file. The default disk is local
 
 
 ##### Export current database
