@@ -77,13 +77,13 @@ This command will export all your database table data into a seed class.
 ```
 php artisan db-exporter:seeds
 ```
-*Important: This **requires your database config file to be updated in `config/database.php`**.*
+**Important**: This requires your database config file to be updated in `config/database.php`**
 
 
 #### Uploading migrations/seeds to Storage Disk
 
 
-**Important: The package backup destinations paths should match your desired disk location
+**Important:** The package backup destinations paths should match your desired disk location
 
 
 You can backup migrations and / or seeds to a storage disk that you application supports.
@@ -103,14 +103,14 @@ Or even combine the two:
 php artisan db-exporter:backup --migrations --seeds
 ```
 
-*** This feature uses Laravel's filesystem. 
+**This feature uses Laravel's filesystem**. 
 
 You must configure your storage and then specify the disk name in the config file. The default disk is local
 
 
 ##### Export current database
 
-**This class will export the database name from your `config/database.php` file, based on your 'default' option.
+This class will export the database name from your `config/database.php` file, based on your 'default' option.
 
 
 
@@ -156,8 +156,7 @@ $this->call('nameOfYourSeedClass');
 
 Now you can run from the commmand line:
 
-* `php artisan db:seed`,
-* or, without having to add the call method: `php artisan db:seed --class=nameOfYourSeedClass`
+ `php artisan db:seed`,  or, without having to add the call method: `php artisan db:seed --class=nameOfYourSeedClass`
 
 #### Chaining
 You can also combine the generation of the migrations & the seed:
