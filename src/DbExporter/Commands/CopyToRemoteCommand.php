@@ -13,10 +13,10 @@ class CopyToRemoteCommand extends GeneratorCommand
     protected $description = 'Command to copy the migrations and/or the seeds to a remote host.';
 
     protected $ignoredFiles = [
-                               '..',
-                               '.',
-                               '.gitkeep',
-                              ];
+                                '..',
+                                '.',
+                                '.gitkeep',
+                                ];
 
     protected $uploadedFiles;
 
@@ -35,7 +35,7 @@ class CopyToRemoteCommand extends GeneratorCommand
             $this->line("\n");
             $this->info(ucfirst($type));
             foreach ($files as $file) {
-                $this->sectionMessage($type, $file.' uploaded.');
+                $this->sectionMessage($type, $file . ' uploaded.');
             }
         }
 
@@ -49,20 +49,20 @@ class CopyToRemoteCommand extends GeneratorCommand
     {
         return [
                 [
-                 'migrations',
-                 'm',
-                 InputOption::VALUE_NONE,
-                 'Upload the migrations to a storage.',
-                 null,
+                    'migrations',
+                    'm',
+                    InputOption::VALUE_NONE,
+                    'Upload the migrations to a storage.',
+                    null,
                 ],
                 [
-                 'seeds',
-                 's',
-                 InputOption::VALUE_NONE,
-                 'Upload the seeds to the remote host.',
-                 null,
+                    'seeds',
+                    's',
+                    InputOption::VALUE_NONE,
+                    'Upload the seeds to the remote host.',
+                    null,
                 ],
-               ];
+                ];
     }
 
 //end getOptions()
@@ -79,19 +79,18 @@ class CopyToRemoteCommand extends GeneratorCommand
 
     protected function upload($what)
     {
-        $localPath = Config::get('db-exporter.export_path.'.$what);
+        $localPath = Config::get('db-exporter.export_path.' . $what);
         $dir = scandir($localPath);
-        $remotePath = Config::get('db-exporter.remote.'.$what);
+        $remotePath = Config::get('db-exporter.remote.' . $what);
         $this->line("\n");
         $this->info(ucfirst($what));
         // Reset file coounter
         static::$filesCount = 0;
         // Prepare the progress bar
-        array_walk($dir, function ($file) {
+        array_walk($dir, function($file) {
             if ($this->ignoredFile($file)) {
                 return;
-            }
-            ++static::$filesCount;
+            }++static::$filesCount;
         });
         $progress = $this->output->createProgressBar(static::$filesCount);
         foreach ($dir as $file) {
@@ -101,12 +100,12 @@ class CopyToRemoteCommand extends GeneratorCommand
             }
 
             // Capture the uploaded files for displaying later
-            $this->uploadedFiles[$what][] = $remotePath.$file;
+            $this->uploadedFiles[$what][] = $remotePath . $file;
 
             // Copy the files
             Storage::disk($this->getDiskName())->put(
-                $remotePath.$file,
-                $localPath.'/'.$file
+                $remotePath . $file,
+                $localPath . '/' . $file
             );
             $progress->advance();
         }
@@ -118,6 +117,9 @@ class CopyToRemoteCommand extends GeneratorCommand
 
 //end upload()
 
+    /**
+     * @return string|null
+     */
     protected function getDiskName()
     {
         // For now static from he config file.

@@ -37,9 +37,9 @@ class GeneratorCommand extends Command
         // Symfony style block messages
         $formatter = $this->getHelperSet()->get('formatter');
         $errorMessages = [
-                           $title,
-                           $message,
-                          ];
+                            $title,
+                            $message,
+                            ];
         $formattedBlock = $formatter->formatBlock($errorMessages, $style, true);
         $this->line($formattedBlock);
     }
@@ -62,11 +62,11 @@ class GeneratorCommand extends Command
     {
         return [
                 [
-                 'database',
-                 InputArgument::OPTIONAL,
-                 'Override the application database',
+                    'database',
+                    InputArgument::OPTIONAL,
+                    'Override the application database',
                 ],
-               ];
+                ];
     }
 
 //end getArguments()
@@ -75,13 +75,13 @@ class GeneratorCommand extends Command
     {
         return [
                 [
-                 'ignore',
-                 'i',
-                 InputOption::VALUE_REQUIRED,
-                 'Ignore tables to export, seperated by a comma',
-                 null,
+                    'ignore',
+                    'i',
+                    InputOption::VALUE_REQUIRED,
+                    'Ignore tables to export, seperated by a comma',
+                    null,
                 ],
-               ];
+                ];
     }
 
 //end getOptions()

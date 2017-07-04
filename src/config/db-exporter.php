@@ -2,7 +2,7 @@
 
 return [
     'backup' => [
-       /*
+        /*
         * The disk where your files will be backed up
         **/
         'disk' => 'local',

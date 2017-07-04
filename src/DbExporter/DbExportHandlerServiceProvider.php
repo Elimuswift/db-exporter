@@ -33,7 +33,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-             realpath(__DIR__ . '/../') . '/config/db-exporter.php' => config_path('db-exporter.php'),
+                realpath(__DIR__ . '/../') . '/config/db-exporter.php' => config_path('db-exporter.php'),
             ],
             'config'
         );
@@ -44,7 +44,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         );
         // Instatiate a new DbMigrations class to send to the handler
         $this->migrator = $migrator;
-         // Load the alias
+            // Load the alias
         $this->loadAlias();
     }
 
@@ -55,7 +55,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
         $this->app->register(DbMigrationsServiceProvider::class);
         // Register the base export handler class
         $this->registerDbExportHandler();
-         // Handle the artisan commands
+            // Handle the artisan commands
         $this->registerCommands();
     }
 
@@ -74,9 +74,9 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     public function registerCommands()
     {
         $commands = [
-                     'Migrations',
-                     'Seeds',
-                     'Backup',
+                        'Migrations',
+                        'Seeds',
+                        'Backup',
                     ];
 
         foreach ($commands as $command) {
@@ -98,7 +98,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'db-exporter.migrations',
-            function ($app) {
+            function($app) {
                 return new Commands\MigrationsGeneratorCommand($app[DbExportHandler::class]);
             }
         );
@@ -113,7 +113,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'db-exporter.seeds',
-            function ($app) {
+            function($app) {
                 return new Commands\SeedGeneratorCommand($app[DbExportHandler::class]);
             }
         );
@@ -125,7 +125,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             'db-exporter.backup',
-            function () {
+            function() {
                 return new Commands\CopyToRemoteCommand();
             }
         );
@@ -140,7 +140,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             DbExportHandler::class,
-            function ($app) {
+            function($app) {
                 // Instatiate a new DbSeeding class to send to the handler
                 $seeder = new DbSeeding($app[DbMigrations::class]->database);
 
@@ -151,7 +151,7 @@ class DbExportHandlerServiceProvider extends ServiceProvider
 
         $this->app->bind(
             'DbExporter',
-            function ($app) {
+            function($app) {
                 return $app[DbExportHandler::class];
             }
         );

@@ -15,25 +15,25 @@ class DbMigrations extends DbExporter
      * @var string
      **/
     protected $columns = [
-                          'int' => 'integer',
-                          'smallint' => 'smallInteger',
-                          'bigint' => 'bigInteger',
-                          'char ' => 'string',
-                          'varchar' => 'string',
-                          'float' => 'float',
-                          'double' => 'double',
-                          'decimal' => 'decimal',
-                          'tinyint' => 'boolean',
-                          'date' => 'date',
-                          'timestamp' => 'timestamp',
-                          'datetime' => 'dateTime',
-                          'longtext' => 'longText',
-                          'mediumtext' => 'mediumText',
-                          'text' => 'text',
-                          'longblob' => 'binary',
-                          'blob' => 'binary',
-                          'enum' => 'enum',
-                         ];
+                            'int' => 'integer',
+                            'smallint' => 'smallInteger',
+                            'bigint' => 'bigInteger',
+                            'char ' => 'string',
+                            'varchar' => 'string',
+                            'float' => 'float',
+                            'double' => 'double',
+                            'decimal' => 'decimal',
+                            'tinyint' => 'boolean',
+                            'date' => 'date',
+                            'timestamp' => 'timestamp',
+                            'datetime' => 'dateTime',
+                            'longtext' => 'longText',
+                            'mediumtext' => 'mediumText',
+                            'text' => 'text',
+                            'longblob' => 'binary',
+                            'blob' => 'binary',
+                            'enum' => 'enum',
+                            ];
     /**
      * Primary key column types.
      *
@@ -185,11 +185,11 @@ class DbMigrations extends DbExporter
             }
 
             $this->schema[$value['table_name']] = [
-                                                   'up' => $up,
-                                                   'constraint' => $Constraint,
-                                                   'constraint_down' => $ConstraintDown,
-                                                   'down' => $down,
-                                                  ];
+                                                    'up' => $up,
+                                                    'constraint' => $Constraint,
+                                                    'constraint_down' => $ConstraintDown,
+                                                    'down' => $down,
+                                                    ];
         }//end foreach
 
         return $this;
