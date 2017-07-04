@@ -103,12 +103,12 @@ Or even combine the two:
 php artisan db-exporter:backup --migrations --seeds
 ```
 
-**This feature uses Laravel's filesystem**. 
+***This feature uses Laravel's filesystem***. 
 
 You must configure your storage and then specify the disk name in the config file. The default disk is local
 
 
-##### Export current database
+#### Export current database
 
 This class will export the database name from your `config/database.php` file, based on your 'default' option.
 
