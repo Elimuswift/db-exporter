@@ -3,6 +3,7 @@
 namespace Elimuswift\DbExporter;
 
 use DB;
+use Storage;
 
 abstract class DbExporter
 {
@@ -29,7 +30,7 @@ abstract class DbExporter
     protected $selects = [
                           'column_name as Field',
                           'column_type as Type',
-                          'is_nullable as Null',
+                          'is_nullable as null',
                           'column_key as Key',
                           'column_default as Default',
                           'extra as Extra',
@@ -133,7 +134,7 @@ abstract class DbExporter
             }
 
             if (!is_dir($dir)) {
-                @mkdir($dir);
+                Storage::makeDirectory($dir);
             }
         }
     }
