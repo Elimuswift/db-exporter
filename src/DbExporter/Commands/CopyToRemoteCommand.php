@@ -20,7 +20,7 @@ class CopyToRemoteCommand extends GeneratorCommand
 
     protected $uploadedFiles;
 
-    protected $commandOptions;
+    protected static $filesCount;
 
     public function __construct()
     {
@@ -32,18 +32,16 @@ class CopyToRemoteCommand extends GeneratorCommand
     public function fire()
     {
         $succes = $this->handleOptions();
-        if ($succes) {
-            // Inform what files have been uploaded
-            foreach ($this->uploadedFiles as $type => $files) {
-                $this->line("\n");
-                $this->info(ucfirst($type));
-                foreach ($files as $file) {
-                    $this->sectionMessage($type, $file.' uploaded.');
-                }
+        foreach ($this->uploadedFiles as $type => $files) {
+            $this->line("\n");
+            $this->info(ucfirst($type));
+            foreach ($files as $file) {
+                $this->sectionMessage($type, $file.' uploaded.');
             }
-
-            $this->blockMessage('Success!', 'Everything uploaded!');
         }
+
+        $disk = $this->getDiskName();
+        $this->blockMessage('Success!', "Everything uploaded to $disk filesystem!");
     }
 
 //end fire()
@@ -73,21 +71,12 @@ class CopyToRemoteCommand extends GeneratorCommand
     protected function handleOptions()
     {
         $options = $this->option();
-        switch ($options) {
-            case $options['migrations'] === true:
-                $this->commandOptions = 'migrations';
-
-                $this->upload('migrations');
-                break;
-            case $options['seeds'] === true:
-                $this->commandOptions = 'seeds';
-
-                $this->upload('seeds');
-                break;
+        foreach ($options as $key => $value) {
+            if ($value) {
+                $this->upload($key);
+            }
         }
     }
-
-//end handleOptions()
 
     protected function upload($what)
     {
@@ -96,11 +85,19 @@ class CopyToRemoteCommand extends GeneratorCommand
         $remotePath = Config::get('db-exporter.remote.'.$what);
         $this->line("\n");
         $this->info(ucfirst($what));
+        // Reset file coounter
+        static::$filesCount = 0;
         // Prepare the progress bar
-        $filesCount = (count($dir) - count($this->ignoredFiles));
-        $progress = $this->output->createProgressBar($filesCount);
+        array_walk($dir, function ($file) {
+            if ($this->ignoredFile($file)) {
+                return;
+            }
+            ++static::$filesCount;
+        });
+        $progress = $this->output->createProgressBar(static::$filesCount);
         foreach ($dir as $file) {
-            if (in_array($file, $this->ignoredFiles)) {
+            if ($this->ignoredFile($file)) {
+                $this->comment("---> ignoring $file ");
                 continue;
             }
 
@@ -125,7 +122,23 @@ class CopyToRemoteCommand extends GeneratorCommand
     protected function getDiskName()
     {
         // For now static from he config file.
-        return Config::get('db-exporter.remote.disk');
+        return Config::get('db-exporter.backup.disk');
+    }
+
+    /**
+     * Determine if a file should be ignored.
+     *
+     * @param string $file filename
+     *
+     * @return bool
+     **/
+    protected function ignoredFile($file)
+    {
+        if (in_array($file, $this->ignoredFiles)) {
+            return true;
+        }
+
+        return false;
     }
 
 //end getDiskName()

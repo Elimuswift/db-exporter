@@ -53,7 +53,7 @@ abstract class DbExporter
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="'.$this->database.'"');
+        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="' . $this->database . '"');
     }
 
 //end getTables()
@@ -62,7 +62,7 @@ abstract class DbExporter
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SHOW INDEX FROM '.$this->database.'.'.$table.' WHERE Key_name != "PRIMARY"');
+        return $pdo->query('SHOW INDEX FROM ' . $this->database . '.' . $table . ' WHERE Key_name != "PRIMARY"');
     }
 
 //end getTableIndexes()
@@ -112,7 +112,7 @@ abstract class DbExporter
      */
     protected function getTableData($table)
     {
-        return DB::table($this->database.'.'.$table)->get();
+        return DB::table($this->database . '.' . $table)->get();
     }
 
 //end getTableData()
@@ -129,7 +129,7 @@ abstract class DbExporter
         $directories = explode($del, $path);
         foreach ($directories as $directory) {
             if (!empty($directory)) {
-                $dir .= $del.$directory;
+                $dir .= $del . $directory;
             }
 
             if (!is_dir($dir)) {
