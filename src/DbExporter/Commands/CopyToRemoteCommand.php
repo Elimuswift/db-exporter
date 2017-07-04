@@ -27,11 +27,10 @@ class CopyToRemoteCommand extends GeneratorCommand
         parent::__construct();
     }
 
-//end __construct()
 
     public function fire()
     {
-        $succes = $this->handleOptions();
+        $this->handleOptions();
         foreach ($this->uploadedFiles as $type => $files) {
             $this->line("\n");
             $this->info(ucfirst($type));
