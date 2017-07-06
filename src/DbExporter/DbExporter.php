@@ -28,7 +28,6 @@ abstract class DbExporter
      * @var array
      **/
     protected $selects = [
-<<<<<<< HEAD
                           'column_name as Field',
                           'column_type as Type',
                           'is_nullable as null',
@@ -37,16 +36,6 @@ abstract class DbExporter
                           'extra as Extra',
                           'data_type as Data_Type',
                          ];
-=======
-                            'column_name as Field',
-                            'column_type as Type',
-                            'is_nullable as Null',
-                            'column_key as Key',
-                            'column_default as Default',
-                            'extra as Extra',
-                            'data_type as Data_Type',
-                            ];
->>>>>>> master
     /**
      * Select fields from  constraints.
      *
