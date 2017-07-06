@@ -33,7 +33,7 @@ class DbMigrationsServiceProvider extends ServiceProvider
     {
         $this->app->singleton(
             DbMigrations::class,
-            function () {
+            function() {
                 $connType = Config::get('database.default');
                 $database = Config::get('database.connections.' . $connType);
 

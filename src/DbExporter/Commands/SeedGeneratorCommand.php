@@ -42,9 +42,9 @@ class SeedGeneratorCommand extends GeneratorCommand
             $formatter = $this->getHelperSet()->get('formatter');
         $filename = $this->getFilename();
         $errorMessages = [
-                               'Success!',
-                               "Database seed class generated in: {$filename}",
-                              ];
+                                'Success!',
+                                "Database seed class generated in: {$filename}",
+                                ];
         $formattedBlock = $formatter->formatBlock($errorMessages, 'info', true);
         $this->line($formattedBlock);
     }
