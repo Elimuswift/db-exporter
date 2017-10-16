@@ -24,9 +24,9 @@ class SeedGeneratorCommand extends GeneratorCommand
         $this->handler = $handler;
     }
 
-//end __construct()
+    //end __construct()
 
-    public function fire()
+    public function handle()
     {
         $database = $this->argument('database');
         // Display some helpfull info
@@ -36,10 +36,10 @@ class SeedGeneratorCommand extends GeneratorCommand
             $this->comment("Preparing the seeder class for database {$database}");
         }
 
-            // Grab the options
-            $this->fireAction('seed', $database);
-            // Symfony style block messages
-            $formatter = $this->getHelperSet()->get('formatter');
+        // Grab the options
+        $this->fireAction('seed', $database);
+        // Symfony style block messages
+        $formatter = $this->getHelperSet()->get('formatter');
         $filename = $this->getFilename();
         $errorMessages = [
                                 'Success!',
@@ -49,14 +49,14 @@ class SeedGeneratorCommand extends GeneratorCommand
         $this->line($formattedBlock);
     }
 
-//end fire()
+    //end fire()
 
     private function getFilename()
     {
-        $filename = ucfirst(Str::camel($this->database)) . 'DatabaseSeeder';
+        $filename = ucfirst(Str::camel($this->database)).'DatabaseSeeder';
 
-        return Config::get('db-exporter.export_path.seeds') . "/{$filename}.php";
+        return Config::get('db-exporter.export_path.seeds')."/{$filename}.php";
     }
 
-//end getFilename()
+    //end getFilename()
 }//end class

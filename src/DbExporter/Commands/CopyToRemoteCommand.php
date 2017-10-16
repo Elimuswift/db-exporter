@@ -27,15 +27,14 @@ class CopyToRemoteCommand extends GeneratorCommand
         parent::__construct();
     }
 
-
-    public function fire()
+    public function handle()
     {
         $this->handleOptions();
         foreach ($this->uploadedFiles as $type => $files) {
             $this->line("\n");
             $this->info(ucfirst($type));
             foreach ($files as $file) {
-                $this->sectionMessage($type, $file . ' uploaded.');
+                $this->sectionMessage($type, $file.' uploaded.');
             }
         }
 
@@ -43,7 +42,7 @@ class CopyToRemoteCommand extends GeneratorCommand
         $this->blockMessage('Success!', "Everything uploaded to $disk filesystem!");
     }
 
-//end fire()
+    //end fire()
 
     protected function getOptions()
     {
@@ -65,7 +64,7 @@ class CopyToRemoteCommand extends GeneratorCommand
                 ];
     }
 
-//end getOptions()
+    //end getOptions()
 
     protected function handleOptions()
     {
@@ -79,18 +78,19 @@ class CopyToRemoteCommand extends GeneratorCommand
 
     protected function upload($what)
     {
-        $localPath = Config::get('db-exporter.export_path.' . $what);
+        $localPath = Config::get('db-exporter.export_path.'.$what);
         $dir = scandir($localPath);
-        $remotePath = Config::get('db-exporter.remote.' . $what);
+        $remotePath = Config::get('db-exporter.remote.'.$what);
         $this->line("\n");
         $this->info(ucfirst($what));
         // Reset file coounter
         static::$filesCount = 0;
         // Prepare the progress bar
-        array_walk($dir, function($file) {
+        array_walk($dir, function ($file) {
             if ($this->ignoredFile($file)) {
                 return;
-            }++static::$filesCount;
+            }
+            ++static::$filesCount;
         });
         $progress = $this->output->createProgressBar(static::$filesCount);
         foreach ($dir as $file) {
@@ -100,12 +100,12 @@ class CopyToRemoteCommand extends GeneratorCommand
             }
 
             // Capture the uploaded files for displaying later
-            $this->uploadedFiles[$what][] = $remotePath . $file;
+            $this->uploadedFiles[$what][] = $remotePath.$file;
 
             // Copy the files
             Storage::disk($this->getDiskName())->put(
-                $remotePath . $file,
-                $localPath . '/' . $file
+                $remotePath.$file,
+                $localPath.'/'.$file
             );
             $progress->advance();
         }
@@ -115,7 +115,7 @@ class CopyToRemoteCommand extends GeneratorCommand
         return true;
     }
 
-//end upload()
+    //end upload()
 
     /**
      * @return string|null
@@ -142,5 +142,5 @@ class CopyToRemoteCommand extends GeneratorCommand
         return false;
     }
 
-//end getDiskName()
+    //end getDiskName()
 }//end class

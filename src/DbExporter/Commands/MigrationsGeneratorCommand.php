@@ -21,9 +21,9 @@ class MigrationsGeneratorCommand extends GeneratorCommand
         $this->handler = $handler;
     }
 
-//end __construct()
+    //end __construct()
 
-    public function fire()
+    public function handle()
     {
         $database = $this->argument('database');
 
@@ -38,8 +38,8 @@ class MigrationsGeneratorCommand extends GeneratorCommand
         $this->fireAction('migrate', $database);
 
         // Symfony style block messages
-        $this->blockMessage('Success!', 'Database migrations generated in: ' . $this->handler->getMigrationsFilePath());
+        $this->blockMessage('Success!', 'Database migrations generated in: '.$this->handler->getMigrationsFilePath());
     }
 
-//end fire()
+    //end fire()
 }//end class
