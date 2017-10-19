@@ -2,6 +2,7 @@
 composer.phar
 composer.lock
 .DS_Store
+.phpintel/
 ### PhpStorm ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm
 

@@ -17,11 +17,24 @@
 
     },
     "require-dev": {
-        "orchestra/testbench": "~3.0"
+        "orchestra/testbench": "~3.0",
+        "orchestra/database": "^3.5"
     },
     "autoload": {
         "psr-4": {
             "Elimuswift\\DbExporter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4" : {
+            "DbExporter\\Tests\\" : "tests"
+        }
+    },
+    "extra": {
+        "laravel" : {
+            "providers": [
+                "Elimuswift\\DbExporter\\DbExportHandlerServiceProvider"
+            ]
         }
     }
 }

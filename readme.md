@@ -28,7 +28,7 @@ Update composer:
 $ php composer.phar update
 ```
 
-Add the service provider to `config/app.php`:
+For laravel `<=5.4`, Add the service provider to `config/app.php`:
 
 ```php
  Elimuswift\DbExporter\DbExportHandlerServiceProvider::class
@@ -42,7 +42,7 @@ php artisan vendor:publish --provider="Elimuswift\DbExporter\DbExportHandlerServ
 
 After publishing the config file make sure you change storage location for migrations and seeds.
 
-*Use `dev-master` as version requirement to be on the cutting edge*
+Use `dev-master` as version requirement to be on the cutting edge
 
 
 ## Documentation
