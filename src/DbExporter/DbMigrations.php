@@ -132,20 +132,20 @@ class DbMigrations extends DbExporter
                 $para = strpos($values->Type, '(');
                 $type = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
                 $numbers = '';
-                $nullable = $values->null == 'NO' ? '' : '->nullable()';
-                $default = empty($values->Default) ? '' : "->default(\"{$values->Default}\")";
-                $default = $values->Default == 'CURRENT_TIMESTAMP' ? '->useCurrent()' : $default;
-                $unsigned = strpos($values->Type, 'unsigned') === false ? '' : '->unsigned()';
+                $nullable = 'NO' == $values->null ? '' : '->nullable()';
+                $default = empty($values->Default) || 'NULL' == $values->Default ? '' : "->default(\"{$values->Default}\")";
+                $default = 'CURRENT_TIMESTAMP' == $values->Default ? '->useCurrent()' : $default;
+                $unsigned = false === strpos($values->Type, 'unsigned') ? '' : '->unsigned()';
                 $pri = '';
 
                 if (in_array($type, ['var', 'varchar', 'double', 'enum', 'decimal', 'float'])) {
                     $para = strpos($values->Type, '(');
                     $opt = substr($values->Type, ($para + 1), -1);
-                    $numbers = $type == 'enum' ? ', array('.$opt.')' : ',  '.$opt;
+                    $numbers = 'enum' == $type ? ', array('.$opt.')' : ',  '.$opt;
                 }
 
                 $method = $this->columnType($type);
-                if ($values->Key == 'PRI') {
+                if ('PRI' == $values->Key) {
                     $tmp = $this->columnType($values->Data_Type, 'primaryKeys');
                     $method = empty($tmp) ? $method : $tmp;
                     $pri .= empty($tmp) ? '                $'."table->primary('".$values->Field."');\n" : '';
@@ -155,10 +155,10 @@ class DbMigrations extends DbExporter
                 $up .= $pri;
             }//end foreach
 
-            $tableIndexes = $this->getTableIndexes($value['table_name']);
+            $tableIndexes = (array) $this->getTableIndexes($value['table_name']);
             if (!is_null($tableIndexes) && count($tableIndexes)) {
                 foreach ($tableIndexes as $index) {
-                    if (Str::endsWith($index['Key_name'], '_index')) {
+                    if (Str::endsWith(@$index['Key_name'], '_index')) {
                         $up .= '                $'."table->index('".$index['Column_name']."');\n";
                     }
                 }
@@ -170,13 +170,14 @@ class DbMigrations extends DbExporter
                 * @var array
              */
             $tableConstraints = $this->getTableConstraints($value['table_name']);
-            if (!is_null($tableConstraints) && count($tableConstraints)) {
+            if (!is_null($tableConstraints) && $tableConstraints->count()) {
                 $Constraint = $ConstraintDown = "
             Schema::table('{$value['table_name']}', function(Blueprint $"."table) {\n";
                 $tables = [];
                 foreach ($tableConstraints as $foreign) {
                     if (!in_array($foreign->Field, $tables)) {
-                        $ConstraintDown .= '                $'."table->dropForeign('".$foreign->Field."');\n";
+                        $field = "{$foreign->Table}_{$foreign->Field}_foreign";
+                        $ConstraintDown .= '                $'."table->dropForeign('".$field."');\n";
                         $Constraint .= '                $'."table->foreign('".$foreign->Field."')->references('".$foreign->References."')->on('".$foreign->ON."')->onDelete('".$foreign->onDelete."');\n";
                         $tables[$foreign->Field] = $foreign->Field;
                     }
@@ -220,7 +221,7 @@ class DbMigrations extends DbExporter
         $downConstraint = '';
 
         // prevent of failure when no table
-        if (!is_null($this->schema) && count($this->schema)) {
+        if (!is_null($this->schema) && is_array($this->schema)) {
             foreach ($this->schema as $name => $values) {
                 // check again for ignored tables
                 if (in_array($name, self::$ignore)) {

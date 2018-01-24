@@ -3,7 +3,6 @@
 namespace Elimuswift\DbExporter;
 
 use DB;
-use Storage;
 
 abstract class DbExporter
 {
@@ -48,25 +47,21 @@ abstract class DbExporter
                                 'key_column_usage.referenced_column_name as References',
                                 'REFERENTIAL_CONSTRAINTS.UPDATE_RULE as onUpdate',
                                 'REFERENTIAL_CONSTRAINTS.DELETE_RULE as onDelete',
-                                ];
+                            ];
 
     protected function getTables()
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="' . $this->database . '"');
+        return $pdo->query('SELECT table_name FROM information_schema.tables WHERE table_schema="'.$this->database.'"');
     }
-
-//end getTables()
 
     public function getTableIndexes($table)
     {
         $pdo = DB::connection()->getPdo();
 
-        return $pdo->query('SHOW INDEX FROM ' . $this->database . '.' . $table . ' WHERE Key_name != "PRIMARY"');
+        return $pdo->query('SHOW INDEX FROM '.$this->database.'.'.$table.' WHERE Key_name != "PRIMARY"');
     }
-
-//end getTableIndexes()
 
     /**
      * Get all the columns for a given table.
@@ -82,8 +77,6 @@ abstract class DbExporter
             ->where('table_name', '=', $table)
             ->get($this->selects);
     }
-
-//end getTableDescribes()
 
     /**
      * Get all the foreign key constraints for a given table.
@@ -102,8 +95,6 @@ abstract class DbExporter
             ->get($this->constraints);
     }
 
-//end getTableConstraints()
-
     /**
      * Grab all the table data.
      *
@@ -113,10 +104,10 @@ abstract class DbExporter
      */
     protected function getTableData($table)
     {
-        return DB::table($this->database . '.' . $table)->get();
+        return DB::table($this->database.'.'.$table)->get();
     }
 
-//end getTableData()
+    //end getTableData()
 
     /**
      * Try to create directories if they dont exist.
@@ -130,16 +121,14 @@ abstract class DbExporter
         $directories = explode($del, $path);
         foreach ($directories as $directory) {
             if (!empty($directory)) {
-                $dir .= $del . $directory;
+                $dir .= $del.$directory;
             }
 
             if (!is_dir($dir)) {
-                Storage::makeDirectory($dir);
+                @mkdir($dir, 0775, true);
             }
         }
     }
-
-//end makePath()
 
     /**
      * Write the file.
@@ -163,4 +152,4 @@ abstract class DbExporter
      * @return mixed
      */
     abstract protected function compile();
-}//end class
+}
