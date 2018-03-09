@@ -29,11 +29,14 @@ abstract class DbExporter
     protected $selects = [
                           'column_name as Field',
                           'column_type as Type',
-                          'is_nullable as null',
+                          'is_nullable as Nullable',
                           'column_key as Key',
                           'column_default as Default',
                           'extra as Extra',
                           'data_type as Data_Type',
+                          'CHARACTER_MAXIMUM_LENGTH as Length',
+                          'NUMERIC_PRECISION as Precision',
+                          'NUMERIC_SCALE as Scale',
                          ];
     /**
      * Select fields from  constraints.
@@ -106,8 +109,6 @@ abstract class DbExporter
     {
         return DB::table($this->database.'.'.$table)->get();
     }
-
-    //end getTableData()
 
     /**
      * Try to create directories if they dont exist.

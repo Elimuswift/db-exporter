@@ -23,7 +23,7 @@ class DbMigrations extends DbExporter
                             'float' => 'float',
                             'double' => 'double',
                             'decimal' => 'decimal',
-                            'tinyint' => 'boolean',
+                            'tinyint' => 'tinyInteger',
                             'date' => 'date',
                             'timestamp' => 'timestamp',
                             'datetime' => 'dateTime',
@@ -35,6 +35,19 @@ class DbMigrations extends DbExporter
                             'enum' => 'enum',
                             'char' => 'char ',
                             'geometry' => 'geometry',
+                            'time' => 'time',
+                            'point' => 'point',
+                            'polygon' => 'polygon',
+                            'multipolygon' => 'muliPolygon',
+                            'multilinestring' => 'multiLineString',
+                            'mulitpoint' => 'multiPoint',
+                            'mediumint' => 'mediumInteger',
+                            'mac' => 'macAddress',
+                            'json' => 'json',
+                            'linestring' => 'lineString',
+                            'geometrycollection' => 'geometryCollection',
+                            'bool' => 'boolean',
+                            'year' => 'year',
                             ];
     /**
      * Primary key column types.
@@ -44,7 +57,6 @@ class DbMigrations extends DbExporter
     protected $primaryKeys = [
                         'bigint' => 'bigIncrements',
                         'int' => 'increments',
-                        'char' => 'uuid',
     ];
 
     protected $schema;
@@ -52,6 +64,12 @@ class DbMigrations extends DbExporter
     protected $customDb = false;
 
     public static $filePath;
+
+    protected $primaryKey;
+
+    protected $defaultLength;
+
+    protected $methodName;
     /**
      * File name for migration file.
      *
@@ -123,7 +141,7 @@ class DbMigrations extends DbExporter
                 continue;
             }
 
-            $down = "Schema::drop('{$value['table_name']}');";
+            $down = "Schema::dropIfExists('{$value['table_name']}');";
             $up = "Schema::create('{$value['table_name']}', function(Blueprint $"."table) {\n";
 
             $tableDescribes = $this->getTableDescribes($value['table_name']);
@@ -131,28 +149,21 @@ class DbMigrations extends DbExporter
             foreach ($tableDescribes as $values) {
                 $para = strpos($values->Type, '(');
                 $type = $para > -1 ? substr($values->Type, 0, $para) : $values->Type;
-                $numbers = '';
-                $nullable = 'NO' == $values->null ? '' : '->nullable()';
-                $default = empty($values->Default) || 'NULL' == $values->Default ? '' : "->default(\"{$values->Default}\")";
-                $default = 'CURRENT_TIMESTAMP' == $values->Default ? '->useCurrent()' : $default;
+                $nullable = 'NO' == $values->Nullable ? '' : '->nullable()';
+                $default = empty($values->Default) || 'NULL' == $values->Default ? '' : "->default({$values->Default})";
+                $default = 'CURRENT_TIMESTAMP' == $values->Default || 'current_timestamp()' == $values->Default ? '->useCurrent()' : $default;
                 $unsigned = false === strpos($values->Type, 'unsigned') ? '' : '->unsigned()';
-                $pri = '';
-
-                if (in_array($type, ['var', 'varchar', 'double', 'enum', 'decimal', 'float'])) {
-                    $para = strpos($values->Type, '(');
-                    $opt = substr($values->Type, ($para + 1), -1);
-                    $numbers = 'enum' == $type ? ', array('.$opt.')' : ',  '.$opt;
-                }
-
-                $method = $this->columnType($type);
+                $this->hasDefaults($type, $values);
+                $this->methodName = $this->columnType($type);
                 if ('PRI' == $values->Key) {
-                    $tmp = $this->columnType($values->Data_Type, 'primaryKeys');
-                    $method = empty($tmp) ? $method : $tmp;
-                    $pri .= empty($tmp) ? '                $'."table->primary('".$values->Field."');\n" : '';
+                    $this->primaryKey = '->primary()';
+                    if ($methodName = $this->columnType($values->Data_Type, 'primaryKeys') && 'auto_increment' == $values->Extra) {
+                        $this->primaryKey = '->autoIncrement()';
+                    }
                 }
 
-                $up .= '                $'."table->{$method}('{$values->Field}'{$numbers}){$nullable}{$default}{$unsigned};\n";
-                $up .= $pri;
+                $up .= '                $'."table->{$this->methodName}('{$values->Field}'{$this->defaultLength}){$this->primaryKey}{$nullable}{$default}{$unsigned};\n";
+                $this->unsetData();
             }//end foreach
 
             $tableIndexes = (array) $this->getTableIndexes($value['table_name']);
@@ -257,6 +268,37 @@ class DbMigrations extends DbExporter
         $template = str_replace('{{downCon}}', $downConstraint, $template);
 
         return $template;
+    }
+
+    /**
+     * summary.
+     *
+     * @author
+     */
+    public function hasDefaults($type, $column)
+    {
+        if ($hasSize = strpos($column->Type, '(')) {
+            $values = substr($column->Type, ($hasSize + 1), -1);
+            if ('enum' == $type) {
+                $this->defaultLength = ', array('.$values.')';
+            } elseif (in_array($type, ['char', 'varchar', 'text', 'mediumtext', 'longtext'])) {
+                $this->defaultLength = ', '.$column->Length;
+            } elseif (in_array($type, ['double', 'float', 'decimal'])) {
+                $this->defaultLength = ", $column->Precision, $column->Scale";
+            }
+        }
+    }
+
+    /**
+     * summary.
+     *
+     * @author
+     */
+    protected function unsetData()
+    {
+        $this->primaryKey = null;
+        $this->methodName = null;
+        $this->defaultLength = null;
     }
 
     //end compile()
