@@ -279,12 +279,22 @@ class DbMigrations extends DbExporter
     {
         if ($hasSize = strpos($column->Type, '(')) {
             $values = substr($column->Type, ($hasSize + 1), -1);
-            if ('enum' == $type) {
-                $this->defaultLength = ', array('.$values.')';
-            } elseif (in_array($type, ['char', 'varchar', 'text', 'mediumtext', 'longtext'])) {
-                $this->defaultLength = ', '.$column->Length;
-            } elseif (in_array($type, ['double', 'float', 'decimal'])) {
-                $this->defaultLength = ", $column->Precision, $column->Scale";
+            switch ($type) {
+                case 'enum':
+                  $this->defaultLength = ', array('.$values.')';
+                    break;
+                case 'char':
+                case 'varchar':
+                case 'text':
+                case 'mediumtext':
+                case 'longtext':
+                    $this->defaultLength = ', '.$column->Length;
+                break;
+                case 'double':
+                case 'float':
+                case 'decimal':
+                  $this->defaultLength = ", $column->Precision, $column->Scale";
+                    break;
             }
         }
     }
