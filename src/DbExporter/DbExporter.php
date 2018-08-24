@@ -152,5 +152,5 @@ abstract class DbExporter
      *
      * @return mixed
      */
-    abstract protected function compile();
+    abstract protected function compile($table);
 }
