@@ -89,7 +89,7 @@ class DbSeeding extends DbExporter
         // Loop over the tables
         foreach ($tables as $key => $value) 
         {
-            if(!$ignore_tables->contains($value['table_name'])) {
+            if($ignore_tables->contains($value['table_name'])) {
                 continue;
             }
 
