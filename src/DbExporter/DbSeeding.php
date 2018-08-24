@@ -78,9 +78,21 @@ class DbSeeding extends DbExporter
         // Get the tables for the database
         $tables = $this->getTables();
 
+        // Get tables to ignore
+        $config = config('db-exporter.seeds');
+        $ignore_tables = collect([]);
+        if(!is_null($config) && !is_null($config['ignore_tables'])) {
+            $ignore_tables = collect($config['ignore_tables']);
+        }
+
         $stub = '';
         // Loop over the tables
-        foreach ($tables as $key => $value) {
+        foreach ($tables as $key => $value) 
+        {
+            if(!$ignore_tables->contains($value['table_name'])) {
+                continue;
+            }
+
             // Do not export the ignored tables
             if (in_array($value['table_name'], self::$ignore)) {
                 continue;

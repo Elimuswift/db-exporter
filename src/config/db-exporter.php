@@ -21,4 +21,9 @@ return [
         'migrations' => database_path('backup/migrations'),
         'seeds' => database_path('backup/seeds'),
     ],
+    'seeds' => [
+        'ignore_tables' => [
+            // Add tables
+        ]
+    ]
 ];
