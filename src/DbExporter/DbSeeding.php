@@ -52,11 +52,14 @@ class DbSeeding extends DbExporter
             $this->convert();
         }
 
-        $seed = $this->compile();
-        $absolutePath = Config::get('db-exporter.export_path.seeds');
-        $this->filename = ucfirst(Str::camel($this->database)) . 'DatabaseSeeder';
-        $this->makePath($absolutePath);
-        file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
+        foreach ($this->seedingStub as $table => $value) 
+        {
+            $seed = $this->compile($table);
+            $absolutePath = Config::get('db-exporter.export_path.seeds');
+            $this->filename = ucfirst(Str::camel($table)) . 'DatabaseSeeder';
+            $this->makePath($absolutePath);
+            file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
+        }
     }
 
 //end write()
@@ -77,8 +80,8 @@ class DbSeeding extends DbExporter
 
         // Get the tables for the database
         $tables = $this->getTables();
-
-        $stub = '';
+        $result = [];
+        
         // Loop over the tables
         foreach ($tables as $key => $value) {
             // Do not export the ignored tables
@@ -86,6 +89,7 @@ class DbSeeding extends DbExporter
                 continue;
             }
 
+            $stub = '';
             $tableName = $value['table_name'];
             $tableData = $this->getTableData($value['table_name']);
             $insertStub = '';
@@ -110,9 +114,11 @@ class DbSeeding extends DbExporter
             {$insertStub}
         ]);";
             }
+
+            $result[$tableName] = $stub; 
         }//end foreach
 
-        $this->seedingStub = $stub;
+        $this->seedingStub = $result;
 
         return $this;
     }
@@ -124,14 +130,14 @@ class DbSeeding extends DbExporter
      *
      * @return mixed
      */
-    protected function compile()
+    protected function compile($table)
     {
         // Grab the template
         $template = File::get(__DIR__ . '/stubs/seed.stub');
 
         // Replace the classname
-        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . 'DatabaseSeeder', $template);
-        $template = str_replace('{{run}}', $this->seedingStub, $template);
+        $template = str_replace('{{className}}', ucfirst(Str::camel($table)) . 'DatabaseSeeder', $template);
+        $template = str_replace('{{run}}', $this->seedingStub[$table], $template);
 
         return $template;
     }

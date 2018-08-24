@@ -224,7 +224,7 @@ class DbMigrations extends DbExporter
      *
      * @return string
      */
-    protected function compile()
+    protected function compile($null = null)
     {
         $upSchema = '';
         $downSchema = '';
