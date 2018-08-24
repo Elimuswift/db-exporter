@@ -101,7 +101,6 @@ class DbSeeding extends DbExporter
                 continue;
             }
 
-            $stub = '';
             $tableName = $value['table_name'];
             $tableData = $this->getTableData($value['table_name']);
             $insertStub = '';
@@ -120,11 +119,18 @@ class DbSeeding extends DbExporter
                 }
             }
 
-            if ($this->hasTableData($tableData)) {
-                $stub .= "
-        DB::table('" . $tableName . "')->insert([
+            $insertStub = "
+        \$data = [
             {$insertStub}
-        ]);";
+        ];";
+
+            if ($this->hasTableData($tableData)) {
+                $stub = $insertStub.'
+
+        foreach($data as $item) 
+        {
+            $this->saveData("'.$tableName.'", $item);
+        }';
             }
 
             $result[$tableName] = $stub; 
