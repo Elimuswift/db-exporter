@@ -167,7 +167,18 @@ class DbSeeding extends DbExporter
         $prop = addslashes($prop);
         $value = addslashes($value);
 
-        return "                '{$prop}' => '{$value}',\n";
+        if(strlen($prop) > 0) {
+            $prop = "'{$prop}'";
+        } else {
+            $prop = 'null';
+        }
+
+        if(strlen($value) > 0) {
+            $value = "'{$value}'";
+        } else {
+            $value = 'null';
+        }
+        return "                {$prop} => {$value},\n";
     }
 
 //end insertPropertyAndValue()
