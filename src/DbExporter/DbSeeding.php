@@ -171,7 +171,8 @@ class DbSeeding extends DbExporter
         }
 
         if(strlen($value) > 0) {
-            $value = "`{$value}`";
+            $value = str_replace("'", "\'", $value);
+            $value = "'{$value}'";
         } else {
             $value = 'null';
         }
