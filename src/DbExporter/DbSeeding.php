@@ -164,9 +164,6 @@ class DbSeeding extends DbExporter
 
     private function insertPropertyAndValue($prop, $value)
     {
-        $prop = addslashes($prop);
-        $value = addslashes($value);
-
         if(strlen($prop) > 0) {
             $prop = "'{$prop}'";
         } else {
@@ -174,7 +171,7 @@ class DbSeeding extends DbExporter
         }
 
         if(strlen($value) > 0) {
-            $value = "'{$value}'";
+            $value = "`{$value}`";
         } else {
             $value = 'null';
         }
