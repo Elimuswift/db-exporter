@@ -1,12 +1,16 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Elimuswift\DbExporter\SeederHelper;
 
-class {{className}} extends Seeder {
+class {{className}} extends Seeder 
+{
+
+	use SeederHelper;
+	
     public function run()
     {
-    	 DB::statement('SET FOREIGN_KEY_CHECKS=0');
-
-         {{run}}
+        {{run}}
     }
+
 }

@@ -52,11 +52,14 @@ class DbSeeding extends DbExporter
             $this->convert();
         }
 
-        $seed = $this->compile();
-        $absolutePath = Config::get('db-exporter.export_path.seeds');
-        $this->filename = ucfirst(Str::camel($this->database)) . 'DatabaseSeeder';
-        $this->makePath($absolutePath);
-        file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
+        foreach ($this->seedingStub as $table => $value) 
+        {
+            $seed = $this->compile($table);
+            $absolutePath = Config::get('db-exporter.export_path.seeds');
+            $this->filename = ucfirst(Str::camel($table)) . 'DatabaseSeeder';
+            $this->makePath($absolutePath);
+            file_put_contents($absolutePath . "/{$this->filename}.php", $seed);
+        }
     }
 
 //end write()
@@ -77,6 +80,7 @@ class DbSeeding extends DbExporter
 
         // Get the tables for the database
         $tables = $this->getTables();
+        $result = [];
 
         // Get tables to ignore
         $config = config('db-exporter.seeds');
@@ -85,7 +89,6 @@ class DbSeeding extends DbExporter
             $ignore_tables = collect($config['ignore_tables']);
         }
 
-        $stub = '';
         // Loop over the tables
         foreach ($tables as $key => $value) 
         {
@@ -116,15 +119,24 @@ class DbSeeding extends DbExporter
                 }
             }
 
-            if ($this->hasTableData($tableData)) {
-                $stub .= "
-        DB::table('" . $tableName . "')->insert([
+            $insertStub = "
+        \$data = [
             {$insertStub}
-        ]);";
+        ];";
+
+            if ($this->hasTableData($tableData)) {
+                $stub = $insertStub.'
+
+        foreach($data as $item) 
+        {
+            $this->saveData("'.$tableName.'", $item);
+        }';
             }
+
+            $result[$tableName] = $stub; 
         }//end foreach
 
-        $this->seedingStub = $stub;
+        $this->seedingStub = $result;
 
         return $this;
     }
@@ -136,14 +148,14 @@ class DbSeeding extends DbExporter
      *
      * @return mixed
      */
-    protected function compile()
+    protected function compile($table)
     {
         // Grab the template
         $template = File::get(__DIR__ . '/stubs/seed.stub');
 
         // Replace the classname
-        $template = str_replace('{{className}}', ucfirst(Str::camel($this->database)) . 'DatabaseSeeder', $template);
-        $template = str_replace('{{run}}', $this->seedingStub, $template);
+        $template = str_replace('{{className}}', ucfirst(Str::camel($table)) . 'DatabaseSeeder', $template);
+        $template = str_replace('{{run}}', $this->seedingStub[$table], $template);
 
         return $template;
     }
@@ -152,10 +164,19 @@ class DbSeeding extends DbExporter
 
     private function insertPropertyAndValue($prop, $value)
     {
-        $prop = addslashes($prop);
-        $value = addslashes($value);
+        if(strlen($prop) > 0) {
+            $prop = "'{$prop}'";
+        } else {
+            $prop = 'null';
+        }
 
-        return "                '{$prop}' => '{$value}',\n";
+        if(strlen($value) > 0) {
+            $value = str_replace("'", "\'", $value);
+            $value = "'{$value}'";
+        } else {
+            $value = 'null';
+        }
+        return "                {$prop} => {$value},\n";
     }
 
 //end insertPropertyAndValue()
