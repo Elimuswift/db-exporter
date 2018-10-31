@@ -85,12 +85,12 @@ class DbSeeding extends DbExporter
         // Get tables to ignore
         $config = config('db-exporter.seeds');
         $ignore_tables = collect([]);
-        if(!is_null($config) && !is_null($config['ignore_tables'])) {
+        if(!is_null($config) && isset($config['ignore_tables']) && !is_null($config['ignore_tables'])) {
             $ignore_tables = collect($config['ignore_tables']);
         }
 
         $show_tables = collect([]);
-        if(!is_null($config) && !is_null($config['use_tables'])) {
+        if(!is_null($config) && isset($config['use_tables']) && !is_null($config['use_tables'])) {
             $show_tables = collect($config['use_tables']);
         }
 
