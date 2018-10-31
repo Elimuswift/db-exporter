@@ -13,9 +13,7 @@ Add `"elimuswift/db-exporter"`* as a requirement to `composer.json`:
 
 ```php
 {
-    ...
     "require": {
-        ...
 		"elimuswift/db-exporter": "*"
     },
 }
@@ -25,7 +23,7 @@ Add `"elimuswift/db-exporter"`* as a requirement to `composer.json`:
 Update composer:
 
 ```
-$ php composer.phar update
+php composer.phar update
 ```
 
 For laravel `<=5.4`, Add the service provider to `config/app.php`:
@@ -115,17 +113,13 @@ This class will export the database name from your `config/database.php` file, b
 
 
 ```php
-
-    DbExporter::migrate();
-
+DbExporter::migrate();
 ```
 
 #### Export a custom database
 
 ```php
-
-    DbExporter::migrate('otherDatabaseName');
-
+DbExporter::migrate('otherDatabaseName');
 ```
 
 #### Database to seed
@@ -134,24 +128,18 @@ This class will export the database name from your `config/database.php` file, b
 This will write a seeder class with all the data of the current database.
 
 ```php
-
-    DbExporter::seed();
-
+DbExporter::seed();
 ```
 #### Seed a custom database
 Just pass the nameof the database to be seeded.
 
 ```php
-
-    DbExporter::seed('myOtherDB');
-
+DbExporter::seed('myOtherDB');
 ```
 Next all you have to do is add the call method on the base seed class:
 
 ```php
-
 $this->call('nameOfYourSeedClass');
-
 ```
 
 Now you can run from the commmand line:
@@ -162,27 +150,20 @@ Now you can run from the commmand line:
 You can also combine the generation of the migrations & the seed:
 
 ```php
-
 DbExporter::migrate()->seed();
-
 ```
 Or with:
 
 ```php
-
 DbExporter::migrateAndSeed();
-
 ```
 
 #### Ignoring tables
 By default the migrations table is ignored. You can add tabled to ignore with the following syntax:
 
 ```php
-
 DbExporter::ignore('tableToIgnore')->migrateAndSeed();
 DbExporter::ignore('table1','table2','table3')->migrateAndSeed();
-
-
 ```
 You can also pass an array of tables to ignore.
 
@@ -201,7 +182,6 @@ return [
         ]
     ]
 ];
-
 ```
 
 With this configuration every time when the command `php artisan db-exporter:seeds` is executed will ignore the tables on the array
@@ -219,7 +199,6 @@ return [
         ]
     ]
 ];
-
 ```
 
 With this configuration every time when the command `php artisan db-exporter:seeds` is executed will only be executed to the tables on the array
