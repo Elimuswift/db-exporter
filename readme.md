@@ -14,10 +14,9 @@ Add `"elimuswift/db-exporter"`* as a requirement to `composer.json`:
 ```php
 {
     "require": {
-		"elimuswift/db-exporter": "*"
+        "elimuswift/db-exporter": "*"
     },
 }
-
 ```
 
 Update composer:
