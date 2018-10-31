@@ -89,9 +89,18 @@ class DbSeeding extends DbExporter
             $ignore_tables = collect($config['ignore_tables']);
         }
 
+        $show_tables = collect([]);
+        if(!is_null($config) && !is_null($config['use_tables'])) {
+            $show_tables = collect($config['use_tables']);
+        }
+
         // Loop over the tables
         foreach ($tables as $key => $value) 
         {
+            if($show_tables->count() > 0 && !$show_tables->contains($value['table_name'])) {
+                continue;
+            }
+
             if($ignore_tables->contains($value['table_name'])) {
                 continue;
             }

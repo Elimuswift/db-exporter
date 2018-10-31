@@ -16,7 +16,7 @@ Add `"elimuswift/db-exporter"`* as a requirement to `composer.json`:
     ...
     "require": {
         ...
-		"elimuswift/db-exporter": "1.0"
+		"elimuswift/db-exporter": "*"
     },
 }
 
@@ -186,7 +186,43 @@ DbExporter::ignore('table1','table2','table3')->migrateAndSeed();
 ```
 You can also pass an array of tables to ignore.
 
+### From the configuration file
 
+#### Ignore tables for seeder
+
+If you want to always ignore certain tables you can do it on the config file
+
+```
+return [
+    'seeds' => [
+        'ignore_tables' => [
+            'table_to_ignore1',
+            'table_to_ignore2'
+        ]
+    ]
+];
+
+```
+
+With this configuration every time when the command `php artisan db-exporter:seeds` is executed will ignore the tables on the array
+
+#### Just use selected tables for seeder
+
+In the other hand, If you want to use always certain tables you can do it on the config file
+
+```
+return [
+    'seeds' => [
+        'use_tables' => [
+            'table_to_ignore1',
+            'table_to_ignore2'
+        ]
+    ]
+];
+
+```
+
+With this configuration every time when the command `php artisan db-exporter:seeds` is executed will only be executed to the tables on the array
 
 ## Credits
 Credits to **@nWidart** the original creator of the package [DbExporter](https://github.com/nWidart/DbExporter). I couldn't get it working as-is, so I decided to rewrite the package to fit the latest versions of laravel, and added a couple a features of my own.
