@@ -139,10 +139,9 @@ class DbSeeding extends DbExporter
         foreach($data as $item) 
         {
             $this->saveData("'.$tableName.'", $item);
-        }';
+        }'; 
+                $result[$tableName] = $stub; 
             }
-
-            $result[$tableName] = $stub; 
         }//end foreach
 
         $this->seedingStub = $result;
