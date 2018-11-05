@@ -13,19 +13,16 @@ Add `"elimuswift/db-exporter"`* as a requirement to `composer.json`:
 
 ```php
 {
-    ...
     "require": {
-        ...
-		"elimuswift/db-exporter": "1.0"
+        "elimuswift/db-exporter": "*"
     },
 }
-
 ```
 
 Update composer:
 
 ```
-$ php composer.phar update
+php composer.phar update
 ```
 
 For laravel `<=5.4`, Add the service provider to `config/app.php`:
@@ -115,17 +112,13 @@ This class will export the database name from your `config/database.php` file, b
 
 
 ```php
-
-    DbExporter::migrate();
-
+DbExporter::migrate();
 ```
 
 #### Export a custom database
 
 ```php
-
-    DbExporter::migrate('otherDatabaseName');
-
+DbExporter::migrate('otherDatabaseName');
 ```
 
 #### Database to seed
@@ -134,24 +127,18 @@ This class will export the database name from your `config/database.php` file, b
 This will write a seeder class with all the data of the current database.
 
 ```php
-
-    DbExporter::seed();
-
+DbExporter::seed();
 ```
 #### Seed a custom database
 Just pass the nameof the database to be seeded.
 
 ```php
-
-    DbExporter::seed('myOtherDB');
-
+DbExporter::seed('myOtherDB');
 ```
 Next all you have to do is add the call method on the base seed class:
 
 ```php
-
 $this->call('nameOfYourSeedClass');
-
 ```
 
 Now you can run from the commmand line:
@@ -162,31 +149,58 @@ Now you can run from the commmand line:
 You can also combine the generation of the migrations & the seed:
 
 ```php
-
 DbExporter::migrate()->seed();
-
 ```
 Or with:
 
 ```php
-
 DbExporter::migrateAndSeed();
-
 ```
 
 #### Ignoring tables
 By default the migrations table is ignored. You can add tabled to ignore with the following syntax:
 
 ```php
-
 DbExporter::ignore('tableToIgnore')->migrateAndSeed();
 DbExporter::ignore('table1','table2','table3')->migrateAndSeed();
-
-
 ```
 You can also pass an array of tables to ignore.
 
+### From the configuration file
 
+#### Ignore tables for seeder
+
+If you want to always ignore certain tables you can do it on the config file
+
+```
+return [
+    'seeds' => [
+        'ignore_tables' => [
+            'table_to_ignore1',
+            'table_to_ignore2'
+        ]
+    ]
+];
+```
+
+With this configuration every time when the command `php artisan db-exporter:seeds` is executed will ignore the tables on the array
+
+#### Just use selected tables for seeder
+
+In the other hand, If you want to use always certain tables you can do it on the config file
+
+```
+return [
+    'seeds' => [
+        'use_tables' => [
+            'table_to_ignore1',
+            'table_to_ignore2'
+        ]
+    ]
+];
+```
+
+With this configuration every time when the command `php artisan db-exporter:seeds` is executed will only be executed to the tables on the array
 
 ## Credits
 Credits to **@nWidart** the original creator of the package [DbExporter](https://github.com/nWidart/DbExporter). I couldn't get it working as-is, so I decided to rewrite the package to fit the latest versions of laravel, and added a couple a features of my own.
