@@ -33,13 +33,13 @@ class DbExportHandlerServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                realpath(__DIR__ . '/../') . '/config/db-exporter.php' => config_path('db-exporter.php'),
+                realpath(__DIR__) . '/config/db-exporter.php' => config_path('db-exporter.php'),
             ],
             'config'
         );
 
         $this->mergeConfigFrom(
-            realpath(__DIR__ . '/../') . '/config/db-exporter.php',
+            realpath(__DIR__) . '/config/db-exporter.php',
             'db-exporter'
         );
         // Instatiate a new DbMigrations class to send to the handler
